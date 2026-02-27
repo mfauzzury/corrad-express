@@ -105,7 +105,7 @@ onMounted(load);
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
       <div class="flex items-center justify-between">
-        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Roles & Permissions</h1>
+        <h1 class="page-title">Roles & Permissions</h1>
         <button
           class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
           @click="startNew"

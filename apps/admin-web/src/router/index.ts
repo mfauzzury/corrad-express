@@ -17,6 +17,7 @@ import RolesView from "@/views/RolesView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import SystemInfoView from "@/views/SystemInfoView.vue";
 import UsersView from "@/views/UsersView.vue";
+import UserEditView from "@/views/UserEditView.vue";
 import { useAuthStore } from "@/stores/auth";
 import { useSiteStore } from "@/stores/site";
 
@@ -39,9 +40,22 @@ const router = createRouter({
     { path: "/kitchen-sink", name: "kitchen-sink", component: KitchenSinkView, meta: { requiresAuth: true, title: "Kitchen Sink" } },
     { path: "/kitchen-sink/forms", name: "kitchen-forms", component: KitchenFormsView, meta: { requiresAuth: true, title: "Forms" } },
     { path: "/kitchen-sink/charts", name: "kitchen-charts", component: KitchenChartsView, meta: { requiresAuth: true, title: "Charts" } },
-    { path: "/profile", name: "profile", component: () => import("@/views/ProfileView.vue"), meta: { requiresAuth: true, title: "My Profile" } },
+    {
+      path: "/profile",
+      name: "profile",
+      meta: { requiresAuth: true },
+      beforeEnter: async () => {
+        const auth = useAuthStore();
+        await auth.initialize();
+        if (auth.user?.id) return `/settings/users/${auth.user.id}`;
+        return { name: "login" };
+      },
+      component: { template: "" },
+    },
     { path: "/settings", name: "settings", component: SettingsView, meta: { requiresAuth: true, title: "Settings" } },
     { path: "/settings/users", name: "settings-users", component: UsersView, meta: { requiresAuth: true, title: "Users" } },
+    { path: "/settings/users/new", name: "user-create", component: UserEditView, meta: { requiresAuth: true, title: "New User" } },
+    { path: "/settings/users/:id", name: "user-edit", component: UserEditView, meta: { requiresAuth: true, title: "Edit User" } },
     { path: "/settings/roles", name: "settings-roles", component: RolesView, meta: { requiresAuth: true, title: "Roles" } },
     { path: "/settings/system", name: "settings-system", component: SystemInfoView, meta: { requiresAuth: true, title: "System Info" } },
   ],

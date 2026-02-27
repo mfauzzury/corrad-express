@@ -1,4 +1,5 @@
 export type PublishStatus = "draft" | "published" | "archived";
+export type ThemeColor = "violet" | "blue" | "green" | "red" | "black-white" | "grey";
 
 export type ApiError = { error: { code: string; message: string; details?: unknown } };
 
@@ -85,6 +86,7 @@ export type SettingsPayload = {
   titleFormat: string;
   metaDescription: string;
   siteIconUrl: string;
+  sidebarLogoUrl: string;
   faviconUrl: string;
   language: string;
   timezone: string;

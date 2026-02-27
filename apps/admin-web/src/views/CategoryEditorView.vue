@@ -52,7 +52,7 @@ onMounted(load);
   <AdminLayout>
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Title ───── -->
-      <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">{{ isEdit ? 'Edit Category' : 'Create Category' }}</h1>
+      <h1 class="page-title">{{ isEdit ? 'Edit Category' : 'Create Category' }}</h1>
 
       <!-- ═══════ FORM ═══════ -->
       <article class="rounded-lg border border-slate-200 bg-white shadow-sm">

@@ -102,7 +102,7 @@ onMounted(load);
   <AdminLayout>
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Title ───── -->
-      <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">{{ isEdit ? 'Edit Page' : 'Create Page' }}</h1>
+      <h1 class="page-title">{{ isEdit ? 'Edit Page' : 'Create Page' }}</h1>
 
       <div class="grid gap-4 lg:grid-cols-[1fr_320px]">
         <!-- ═══════ LEFT COLUMN — Content ═══════ -->

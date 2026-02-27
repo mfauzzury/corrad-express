@@ -71,7 +71,7 @@ const sectionLinks = [
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
       <div class="flex items-center justify-between">
-        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Kitchen Sink: Forms</h1>
+        <h1 class="page-title">Kitchen Sink: Forms</h1>
         <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ sectionLinks.length }} Sections</span>
       </div>
 

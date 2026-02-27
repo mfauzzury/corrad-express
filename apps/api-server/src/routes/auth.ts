@@ -85,12 +85,13 @@ authRouter.post("/logout", async (req, res) => {
   return sendOk(res, { success: true });
 });
 
-function userPayload(user: { id: number; email: string; name: string; photoUrl: string | null }) {
+function userPayload(user: { id: number; email: string; name: string; photoUrl: string | null; role: string }) {
   return {
     id: user.id,
     email: user.email,
     name: user.name,
     photoUrl: user.photoUrl,
+    role: user.role,
   };
 }
 

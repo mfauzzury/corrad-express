@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import {
-  Bell,
-  ChevronDown,
-  LogOut,
-  Shield,
-} from "lucide-vue-next";
+import { Bell, Check, ChevronDown, LogOut, Settings, Shield } from "lucide-vue-next";
 
+import type { ThemeColor } from "@/types";
 import { useSidebarCollapse } from "@/composables/useSidebarCollapse";
 
 import { useAuthStore } from "@/stores/auth";
 import { useMenuStore } from "@/stores/menu";
 import { useSiteStore } from "@/stores/site";
+import { useUiThemeStore } from "@/stores/uiTheme";
 import { API_BASE_URL } from "@/env";
 
 const route = useRoute();
@@ -20,7 +17,31 @@ const router = useRouter();
 const auth = useAuthStore();
 const menuStore = useMenuStore();
 const site = useSiteStore();
+const uiTheme = useUiThemeStore();
 const { isCollapsed, toggle: toggleSidebar } = useSidebarCollapse();
+
+const settingsOpen = ref(false);
+const settingsDropdownRef = ref<HTMLElement | null>(null);
+
+const themeChoices: Array<{ label: string; value: ThemeColor }> = [
+  { label: "Violet", value: "violet" },
+  { label: "Blue", value: "blue" },
+  { label: "Green", value: "green" },
+  { label: "Red", value: "red" },
+  { label: "B&W", value: "black-white" },
+  { label: "Grey", value: "grey" },
+];
+
+const handleDocumentClick = (event: MouseEvent) => {
+  if (!settingsOpen.value) return;
+  if (!settingsDropdownRef.value) return;
+  if (settingsDropdownRef.value.contains(event.target as Node)) return;
+  settingsOpen.value = false;
+};
+
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === "Escape") settingsOpen.value = false;
+};
 
 function resolveUrl(url: string) {
   if (!url) return "";
@@ -31,6 +52,13 @@ function resolveUrl(url: string) {
 onMounted(() => {
   site.load();
   menuStore.load();
+  document.addEventListener("click", handleDocumentClick);
+  document.addEventListener("keydown", handleEscape);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleDocumentClick);
+  document.removeEventListener("keydown", handleEscape);
 });
 
 const openMenus = reactive<Record<string, boolean>>({});
@@ -46,6 +74,16 @@ const userInitials = computed(() => {
 });
 
 const userRoleLabel = computed(() => auth.user?.role || "Administrator");
+const HEADER_TEXT_MAX = 20;
+
+function truncateHeaderText(value: string, max = HEADER_TEXT_MAX) {
+  if (!value) return "";
+  return value.length > max ? `${value.slice(0, max)}...` : value;
+}
+
+const headerSiteTitle = computed(() => truncateHeaderText(site.siteTitle || ""));
+const headerUserName = computed(() => truncateHeaderText(auth.user?.name || "Admin"));
+const headerUserRole = computed(() => truncateHeaderText(userRoleLabel.value));
 
 async function signOut() {
   await auth.signOut();
@@ -59,16 +97,16 @@ function isActive(path: string): boolean {
 
 function itemClass(path: string) {
   if (isActive(path)) {
-    return "bg-violet-50 font-medium text-violet-700 border border-violet-200";
+    return "border border-[var(--accent-200)] bg-[var(--accent-50)] font-medium text-[var(--accent-700)]";
   }
-  return "border border-transparent";
+  return "border border-transparent text-slate-900";
 }
 
 function childClass(path: string) {
   if (route.path === path) {
-    return "bg-violet-50 font-medium text-violet-700 border border-violet-200";
+    return "border border-[var(--accent-200)] bg-[var(--accent-50)] font-medium text-[var(--accent-700)]";
   }
-  return "text-slate-500 border border-transparent";
+  return "border border-transparent text-slate-600";
 }
 
 function toggleMenu(id: string) {
@@ -96,38 +134,102 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
 
 <template>
   <div class="min-h-screen bg-[#f8f9fb]">
-    <!-- ───── Header ───── -->
     <header class="flex h-10 items-center justify-between border-b border-slate-200 bg-white px-5">
       <div class="flex items-center gap-1">
         <div v-if="site.siteIconUrl" class="flex h-[18px] shrink-0 items-center justify-center overflow-hidden">
           <img :src="resolveUrl(site.siteIconUrl)" alt="Site icon" class="h-full w-auto object-contain" />
         </div>
-        <div v-else class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-violet-600 to-indigo-600">
+        <div
+          v-else
+          class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-[var(--accent-600)] to-[var(--accent-500)]"
+        >
           <Shield class="h-[11px] w-[11px] text-white" />
         </div>
       </div>
+
       <div class="flex items-center self-stretch">
-        <span v-if="site.siteTitle" class="px-3 text-sm font-light text-slate-900">{{ site.siteTitle }}</span>
-        <!-- User profile -->
-        <router-link to="/profile" class="group relative flex h-full items-center gap-2 px-3 transition-colors hover:bg-slate-700">
-          <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-[10px] font-semibold text-white">
+        <span v-if="site.siteTitle" class="px-3 text-sm font-light text-slate-900">{{ headerSiteTitle }}</span>
+        <span v-if="site.siteTitle" class="h-full w-px bg-slate-200" />
+
+        <router-link
+          :to="'/settings/users/' + auth.user?.id"
+          class="group relative flex h-full items-center gap-2 px-3 transition-colors hover:bg-[var(--accent-600)]"
+        >
+          <div
+            class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent-600)] to-[var(--accent-500)] text-[10px] font-semibold text-white"
+          >
             {{ userInitials }}
           </div>
           <div class="leading-tight">
-            <p class="text-sm font-medium text-slate-700 group-hover:text-white">{{ auth.user?.name || 'Admin' }}</p>
-            <p class="text-[11px] text-slate-500 group-hover:text-slate-300">{{ userRoleLabel }}</p>
+            <p class="text-sm font-medium text-slate-700 group-hover:text-white">{{ headerUserName }}</p>
+            <p class="text-[11px] text-slate-500 group-hover:text-white/80">{{ headerUserRole }}</p>
           </div>
           <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Profile</span>
         </router-link>
+
+        <span class="h-full w-px bg-slate-200" />
+
+        <div ref="settingsDropdownRef" class="relative flex h-full items-stretch">
+          <button
+            class="group relative flex h-full items-center px-4 text-slate-500 transition-colors hover:bg-[var(--accent-600)] hover:text-white"
+            @click.stop="settingsOpen = !settingsOpen"
+          >
+            <Settings class="h-4 w-4" />
+            <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Theme settings</span>
+          </button>
+
+          <div
+            v-if="settingsOpen"
+            class="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-slate-200 bg-white p-3 shadow-lg"
+          >
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Theme color</p>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                v-for="theme in themeChoices"
+                :key="theme.value"
+                class="flex items-center justify-between rounded-md border px-2.5 py-2 text-xs font-medium transition-colors"
+                :class="uiTheme.themeColor === theme.value
+                  ? 'border-[var(--accent-500)] bg-[var(--accent-50)] text-[var(--accent-700)]'
+                  : 'border-slate-200 text-slate-600 hover:border-[var(--accent-ring)] hover:text-slate-900'"
+                @click="uiTheme.setThemeColor(theme.value)"
+              >
+                <span class="flex items-center gap-2">
+                  <span
+                    class="h-2.5 w-2.5 rounded-full"
+                    :class="theme.value === 'violet'
+                      ? 'bg-violet-500'
+                      : theme.value === 'blue'
+                        ? 'bg-blue-500'
+                        : theme.value === 'green'
+                          ? 'bg-emerald-500'
+                          : theme.value === 'red'
+                            ? 'bg-rose-500'
+                            : theme.value === 'black-white'
+                              ? 'bg-slate-900'
+                              : 'bg-neutral-500'"
+                  />
+                  {{ theme.label }}
+                </span>
+                <Check v-if="uiTheme.themeColor === theme.value" class="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <span class="h-full w-px bg-slate-200" />
+
         <button
-          class="group relative flex h-full items-center px-4 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
+          class="group relative flex h-full items-center px-4 text-slate-500 transition-colors hover:bg-[var(--accent-600)] hover:text-white"
         >
           <Bell class="h-4 w-4" />
           <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
           <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Notifications</span>
         </button>
+
+        <span class="h-full w-px bg-slate-200" />
+
         <button
-          class="group relative flex h-full items-center px-4 text-slate-400 transition-colors hover:bg-rose-600 hover:text-white"
+          class="group relative flex h-full items-center px-4 text-slate-500 transition-colors hover:bg-[var(--accent-600)] hover:text-white"
           @click="signOut"
         >
           <LogOut class="h-4 w-4" />
@@ -137,14 +239,12 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
     </header>
 
     <div class="flex flex-col md:flex-row">
-      <!-- ───── Sidebar ───── -->
       <aside
         class="relative flex flex-col border-r border-slate-200 bg-slate-50/50 transition-[width] duration-300 ease-in-out md:sticky md:top-0 md:h-[calc(100vh-40px)]"
         :class="isCollapsed ? 'w-full md:w-14' : 'w-full md:w-64'"
       >
-        <!-- Sidebar Toggle — edge pill -->
         <button
-          class="absolute -right-3.5 top-10 z-40 hidden h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-violet-600 text-white shadow-md transition-all hover:bg-violet-700 hover:shadow-lg md:flex"
+          class="absolute -right-3.5 top-10 z-40 hidden h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-[var(--accent-600)] text-white shadow-md transition-all hover:bg-[var(--accent-700)] hover:shadow-lg md:flex"
           :title="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
           @click="toggleSidebar"
         >
@@ -154,10 +254,18 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
           />
         </button>
 
-        <!-- Navigation -->
+        <div
+          v-if="site.sidebarLogoUrl"
+          class="border-b border-slate-200 bg-white px-3 py-3"
+          :class="isCollapsed ? 'md:hidden' : ''"
+        >
+          <div class="flex h-12 items-center justify-center overflow-hidden">
+            <img :src="resolveUrl(site.sidebarLogoUrl)" alt="Sidebar logo" class="h-full w-full object-contain" />
+          </div>
+        </div>
+
         <nav class="flex-1 p-3" :class="isCollapsed ? 'md:overflow-visible md:px-0 md:py-2' : 'overflow-y-auto'">
           <div v-for="(group, gi) in menuStore.resolvedMenu" :key="group.id">
-            <!-- Group header -->
             <p
               class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400"
               :class="[gi === 0 ? 'mb-1' : 'mb-1 mt-4', isCollapsed ? 'md:hidden' : '']"
@@ -165,16 +273,14 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
               {{ group.label }}
             </p>
 
-            <!-- Items in this group -->
             <div v-for="item in group.items" :key="item.id" class="mb-0.5">
-              <!-- ── Parent with children ── -->
               <button
                 v-if="item.children && item.children.length > 0"
                 type="button"
-                class="group relative flex w-full items-center rounded-lg text-left text-sm font-medium transition-all hover:bg-violet-50/50"
+                class="group relative flex w-full items-center rounded-lg text-left text-sm font-medium transition-all hover:bg-[var(--accent-50)]"
                 :class="[
                   isCollapsed ? 'md:justify-center md:px-0 md:py-2.5 md:rounded-none gap-2.5 px-3 py-1.5' : 'gap-2.5 px-3 py-1.5',
-                  isCollapsed && isChildActive(item) ? 'md:bg-violet-50 md:text-violet-700 md:border md:border-violet-200 md:font-medium text-slate-700' : 'text-slate-700',
+                  isCollapsed && isChildActive(item) ? 'md:border md:border-[var(--accent-200)] md:bg-[var(--accent-50)] md:text-[var(--accent-700)] md:font-medium text-slate-900' : 'text-slate-900',
                   isCollapsed ? '' : itemClass(isChildActive(item) ? route.path : item.to)
                 ]"
                 @click="isCollapsed ? toggleSidebar() : toggleMenu(item.id)"
@@ -184,7 +290,7 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                   class="shrink-0 transition-colors"
                   :class="[
                     isCollapsed ? 'md:h-5 md:w-5 h-4 w-4' : 'h-4 w-4',
-                    isCollapsed && isChildActive(item) ? 'md:text-violet-700 text-slate-700' : isChildActive(item) ? 'text-slate-700' : 'text-slate-400 group-hover:text-violet-600'
+                    isCollapsed && isChildActive(item) ? 'md:text-[var(--accent-700)] text-slate-700' : isChildActive(item) ? 'text-slate-900' : 'text-slate-400 group-hover:text-[var(--accent-600)]'
                   ]"
                 />
                 <span class="flex-1" :class="isCollapsed ? 'md:hidden' : ''">{{ item.label }}</span>
@@ -192,7 +298,6 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                   class="h-4 w-4 text-slate-400 transition-transform duration-200"
                   :class="[{ '-rotate-90': !openMenus[item.id] }, isCollapsed ? 'md:hidden' : '']"
                 />
-                <!-- Tooltip when collapsed -->
                 <span
                   v-if="isCollapsed"
                   class="pointer-events-none absolute left-full z-50 ml-2 hidden whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 md:block"
@@ -201,14 +306,13 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                 </span>
               </button>
 
-              <!-- ── Parent without children ── -->
               <router-link
                 v-else
                 :to="item.to"
-                class="group relative flex items-center rounded-lg text-sm font-medium transition-all hover:bg-violet-50/50"
+                class="group relative flex items-center rounded-lg text-sm font-medium transition-all hover:bg-[var(--accent-50)]"
                 :class="[
                   isCollapsed ? 'md:justify-center md:px-0 md:py-2.5 md:rounded-none gap-2.5 px-3 py-1.5' : 'gap-2.5 px-3 py-1.5',
-                  isCollapsed && isActive(item.to) ? 'md:bg-violet-50 md:text-violet-700 md:border md:border-violet-200 md:font-medium text-slate-700' : 'text-slate-700',
+                  isCollapsed && isActive(item.to) ? 'md:border md:border-[var(--accent-200)] md:bg-[var(--accent-50)] md:text-[var(--accent-700)] md:font-medium text-slate-900' : 'text-slate-900',
                   isCollapsed ? '' : itemClass(item.to)
                 ]"
               >
@@ -217,11 +321,10 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                   class="shrink-0 transition-colors"
                   :class="[
                     isCollapsed ? 'md:h-5 md:w-5 h-4 w-4' : 'h-4 w-4',
-                    isCollapsed && isActive(item.to) ? 'md:text-violet-700 text-slate-700' : isActive(item.to) ? 'text-slate-700' : 'text-slate-400 group-hover:text-violet-600'
+                    isCollapsed && isActive(item.to) ? 'md:text-[var(--accent-700)] text-slate-700' : isActive(item.to) ? 'text-slate-900' : 'text-slate-400 group-hover:text-[var(--accent-600)]'
                   ]"
                 />
                 <span class="flex-1" :class="isCollapsed ? 'md:hidden' : ''">{{ item.label }}</span>
-                <!-- Tooltip when collapsed -->
                 <span
                   v-if="isCollapsed"
                   class="pointer-events-none absolute left-full z-50 ml-2 hidden whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 md:block"
@@ -230,7 +333,6 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                 </span>
               </router-link>
 
-              <!-- Children submenu (expanded only) -->
               <div
                 v-if="item.children && item.children.length > 0 && openMenus[item.id] && !isCollapsed"
                 class="ml-5 mt-1 space-y-0.5 border-l-2 border-slate-200 pl-4"
@@ -239,7 +341,7 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
                   v-for="child in item.children"
                   :key="child.to"
                   :to="child.to"
-                  class="block rounded-md px-3 py-1 text-sm transition-all hover:bg-violet-50/50"
+                  class="block rounded-md px-3 py-1 text-sm transition-all hover:bg-[var(--accent-50)]"
                   :class="childClass(child.to)"
                 >
                   {{ child.label }}
@@ -249,7 +351,6 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
           </div>
         </nav>
 
-        <!-- Sidebar Footer -->
         <div
           v-if="site.footerText"
           class="border-t border-slate-200 px-3 py-2.5 transition-opacity duration-300"
@@ -259,7 +360,6 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
         </div>
       </aside>
 
-      <!-- ───── Main Content ───── -->
       <main class="w-full min-w-0 flex-1 bg-white p-3 transition-all duration-300 ease-in-out md:p-4">
         <slot />
       </main>

@@ -7,6 +7,7 @@ export const useSiteStore = defineStore("site", {
     siteTitle: "CORRAD+",
     titleFormat: "%page% | %site%",
     siteIconUrl: "",
+    sidebarLogoUrl: "",
     footerText: "",
     initialized: false,
   }),
@@ -18,6 +19,7 @@ export const useSiteStore = defineStore("site", {
         this.siteTitle = d.siteTitle || "CORRAD+";
         this.titleFormat = d.titleFormat || "%page% | %site%";
         this.siteIconUrl = d.siteIconUrl || "";
+        this.sidebarLogoUrl = d.sidebarLogoUrl || "";
         this.footerText = d.footerText || "";
         this.initialized = true;
       } catch {
@@ -28,6 +30,7 @@ export const useSiteStore = defineStore("site", {
       this.siteTitle = payload.siteTitle || "CORRAD+";
       this.titleFormat = payload.titleFormat || "%page% | %site%";
       this.siteIconUrl = payload.siteIconUrl || "";
+      this.sidebarLogoUrl = payload.sidebarLogoUrl || "";
       this.footerText = payload.footerText || "";
     },
     setDocumentTitle(pageTitle: string) {

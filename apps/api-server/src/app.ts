@@ -15,7 +15,9 @@ import { mediaRouter } from "./routes/media.js";
 import { pagesRouter } from "./routes/pages.js";
 import { categoriesRouter } from "./routes/categories.js";
 import { postsRouter } from "./routes/posts.js";
+import { rolesRouter } from "./routes/roles.js";
 import { settingsRouter } from "./routes/settings.js";
+import { usersRouter } from "./routes/users.js";
 import { sendError } from "./utils/responses.js";
 
 fs.mkdirSync(env.uploadDir, { recursive: true });
@@ -57,6 +59,8 @@ app.use("/api/categories", categoriesRouter);
 app.use("/api/pages", pagesRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/settings", settingsRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/roles", rolesRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/auth", authRouter);
 

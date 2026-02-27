@@ -142,7 +142,7 @@ function resetToDefaults() {
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
       <div class="flex items-center justify-between">
-        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Menu Configuration</h1>
+        <h1 class="page-title">Menu Configuration</h1>
         <div class="flex items-center gap-2">
           <button
             class="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"

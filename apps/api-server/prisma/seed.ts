@@ -25,6 +25,7 @@ async function main() {
     { key: "titleFormat", value: "%page% | %site%" },
     { key: "metaDescription", value: "Internal UI standard and admin toolkit." },
     { key: "siteIconUrl", value: "" },
+    { key: "sidebarLogoUrl", value: "" },
     { key: "faviconUrl", value: "" },
     { key: "language", value: "en" },
     { key: "timezone", value: "UTC" },
@@ -203,9 +204,29 @@ async function main() {
     await prisma.post.update({ where: { slug: "data-mesh-revolution" }, data: { categories: { set: [{ id: bigData.id }, { id: swEng.id }] } } });
   }
 
+  // Seed default role
+  await prisma.role.upsert({
+    where: { name: "admin" },
+    update: {},
+    create: {
+      name: "admin",
+      description: "Full system access",
+      permissions: JSON.stringify([
+        "posts.view", "posts.create", "posts.edit", "posts.delete",
+        "pages.view", "pages.create", "pages.edit", "pages.delete",
+        "media.view", "media.upload", "media.delete",
+        "users.view", "users.create", "users.edit", "users.delete",
+        "roles.view", "roles.create", "roles.edit", "roles.delete",
+        "settings.view", "settings.edit",
+        "menus.view", "menus.edit",
+      ]),
+    },
+  });
+
   console.log(`Seeded admin user: ${adminEmail}`);
   console.log(`Seeded ${samplePosts.length} sample posts`);
   console.log(`Seeded ${sampleCategories.length} categories`);
+  console.log("Seeded default admin role");
 }
 
 main()

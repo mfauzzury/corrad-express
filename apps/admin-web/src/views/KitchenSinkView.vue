@@ -20,6 +20,8 @@ import {
   ChevronsLeftRight,
   CheckCircle2,
   XCircle,
+  Clock3,
+  ListChecks,
 } from "lucide-vue-next";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
@@ -48,6 +50,8 @@ const sectionLinks = [
   { id: "dropdown", label: "Dropdown", icon: ChevronDown, color: "text-teal-600" },
   { id: "tooltip", label: "Tooltip", icon: HelpCircle, color: "text-orange-600" },
   { id: "table", label: "Table", icon: Table2, color: "text-rose-600" },
+  { id: "timeline", label: "Timeline", icon: Clock3, color: "text-sky-600" },
+  { id: "steps", label: "Steps", icon: ListChecks, color: "text-indigo-600" },
   { id: "pagination", label: "Pagination", icon: ChevronsLeftRight, color: "text-fuchsia-600" },
 ];
 
@@ -62,7 +66,7 @@ function nextPage(delta: number) {
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Slim Title Bar ───── -->
       <div class="flex items-center justify-between">
-        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">UI Standard Reference</h1>
+        <h1 class="page-title">UI Standard Reference</h1>
         <div class="flex items-center gap-2">
           <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ sectionLinks.length }} Components</span>
         </div>
@@ -714,6 +718,154 @@ function nextPage(delta: number) {
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
                   <p>Do not overload table rows with too many inline actions.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ═══════ TIMELINE ═══════ -->
+        <article id="timeline" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Clock3 class="h-4 w-4 text-sky-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Timeline</h2>
+          </div>
+          <div class="space-y-4 p-4">
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
+                <ol class="space-y-5">
+                  <li class="relative pl-8">
+                    <span class="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
+                    <span class="absolute left-[7px] top-5 h-[calc(100%+8px)] w-px bg-slate-200" />
+                    <p class="text-sm font-medium text-slate-900">Content drafted</p>
+                    <p class="text-xs text-slate-500">By Editor · 09:20 AM</p>
+                  </li>
+                  <li class="relative pl-8">
+                    <span class="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-4 ring-blue-100" />
+                    <span class="absolute left-[7px] top-5 h-[calc(100%+8px)] w-px bg-slate-200" />
+                    <p class="text-sm font-medium text-slate-900">Sent for review</p>
+                    <p class="text-xs text-slate-500">By Content Lead · 11:05 AM</p>
+                  </li>
+                  <li class="relative pl-8">
+                    <span class="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 ring-4 ring-amber-100" />
+                    <p class="text-sm font-medium text-slate-900">Scheduled to publish</p>
+                    <p class="text-xs text-slate-500">Tomorrow · 08:00 AM</p>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">
+                Use compact timeline for activity logs and expanded timeline for release histories.
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">
+                Show clear status color coding (done, in review, scheduled) with readable timestamps.
+              </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+                <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                <div class="text-sm text-emerald-900">
+                  <p class="mb-1 font-semibold">Do</p>
+                  <p>Keep chronology obvious with consistent spacing and timestamp formatting.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
+                <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                <div class="text-sm text-amber-900">
+                  <p class="mb-1 font-semibold">Don&apos;t</p>
+                  <p>Do not overload each timeline row with too many metadata fields.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ═══════ STEPS ═══════ -->
+        <article id="steps" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <ListChecks class="h-4 w-4 text-indigo-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Steps</h2>
+          </div>
+          <div class="space-y-4 p-4">
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
+                <div class="grid gap-3 md:grid-cols-4">
+                  <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                    <p class="text-xs font-semibold text-emerald-700">Step 1</p>
+                    <p class="mt-1 text-sm font-medium text-emerald-900">Draft</p>
+                  </div>
+                  <div class="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                    <p class="text-xs font-semibold text-blue-700">Step 2</p>
+                    <p class="mt-1 text-sm font-medium text-blue-900">Review</p>
+                  </div>
+                  <div class="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                    <p class="text-xs font-semibold text-amber-700">Step 3</p>
+                    <p class="mt-1 text-sm font-medium text-amber-900">Approve</p>
+                  </div>
+                  <div class="rounded-lg border border-slate-200 bg-white p-3">
+                    <p class="text-xs font-semibold text-slate-500">Step 4</p>
+                    <p class="mt-1 text-sm font-medium text-slate-700">Publish</p>
+                  </div>
+                </div>
+
+                <div class="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+                  <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Design 2: Connector Stepper</p>
+                  <div class="flex items-center justify-between">
+                    <div class="flex flex-col items-center gap-1">
+                      <span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">1</span>
+                      <span class="text-xs font-medium text-slate-700">Setup</span>
+                    </div>
+                    <div class="mx-2 h-px flex-1 bg-emerald-300" />
+                    <div class="flex flex-col items-center gap-1">
+                      <span class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">2</span>
+                      <span class="text-xs font-medium text-slate-700">Details</span>
+                    </div>
+                    <div class="mx-2 h-px flex-1 bg-blue-300" />
+                    <div class="flex flex-col items-center gap-1">
+                      <span class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">3</span>
+                      <span class="text-xs font-medium text-blue-700">Review</span>
+                    </div>
+                    <div class="mx-2 h-px flex-1 bg-slate-200" />
+                    <div class="flex flex-col items-center gap-1">
+                      <span class="flex h-7 w-7 items-center justify-center rounded-full border border-slate-300 bg-white text-xs font-semibold text-slate-500">4</span>
+                      <span class="text-xs font-medium text-slate-500">Done</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">
+                Use horizontal steps for short wizards and vertical steps for long setup flows.
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">
+                Include complete, active, and pending states with labels and color contrast.
+              </div>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+                <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                <div class="text-sm text-emerald-900">
+                  <p class="mb-1 font-semibold">Do</p>
+                  <p>Keep each step title short and action-oriented.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
+                <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                <div class="text-sm text-amber-900">
+                  <p class="mb-1 font-semibold">Don&apos;t</p>
+                  <p>Do not hide step status solely in color; always show text labels.</p>
                 </div>
               </div>
             </div>

@@ -35,6 +35,7 @@ export const settingsInputSchema = z.object({
   titleFormat: z.string().min(1),
   metaDescription: z.string().default(""),
   siteIconUrl: z.string().default(""),
+  sidebarLogoUrl: z.string().default(""),
   faviconUrl: z.string().default(""),
   language: z.string().min(1),
   timezone: z.string().min(1),
@@ -50,6 +51,20 @@ export const categoryInputSchema = z.object({
   name: z.string().min(1),
   slug: z.string().optional(),
   description: z.string().optional(),
+});
+
+export const userInputSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(6).optional(),
+  role: z.string().min(1),
+  isActive: z.boolean().default(true),
+});
+
+export const roleInputSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().default(""),
+  permissions: z.array(z.string()).default([]),
 });
 
 export const adminMenuPrefsSchema = z.object({
