@@ -7,6 +7,7 @@ export const useSiteStore = defineStore("site", {
     siteTitle: "CORRAD+",
     titleFormat: "%page% | %site%",
     siteIconUrl: "",
+    footerText: "",
     initialized: false,
   }),
   actions: {
@@ -17,6 +18,7 @@ export const useSiteStore = defineStore("site", {
         this.siteTitle = d.siteTitle || "CORRAD+";
         this.titleFormat = d.titleFormat || "%page% | %site%";
         this.siteIconUrl = d.siteIconUrl || "";
+        this.footerText = d.footerText || "";
         this.initialized = true;
       } catch {
         // use defaults
@@ -26,6 +28,7 @@ export const useSiteStore = defineStore("site", {
       this.siteTitle = payload.siteTitle || "CORRAD+";
       this.titleFormat = payload.titleFormat || "%page% | %site%";
       this.siteIconUrl = payload.siteIconUrl || "";
+      this.footerText = payload.footerText || "";
     },
     setDocumentTitle(pageTitle: string) {
       document.title = this.titleFormat

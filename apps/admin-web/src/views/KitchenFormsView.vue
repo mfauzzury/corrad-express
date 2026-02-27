@@ -68,28 +68,15 @@ const sectionLinks = [
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Kitchen Sink: Forms</h1>
-            <p class="mt-1 text-slate-500">Isolated form patterns for CMS create/edit pages.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-              {{ sectionLinks.length }} Sections
-            </div>
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /kitchen-sink/forms
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Kitchen Sink: Forms</h1>
+        <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ sectionLinks.length }} Sections</span>
       </div>
 
       <!-- ───── Quick Jump Nav ───── -->
-      <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Quick Jump</p>
         <div class="grid gap-1.5 sm:grid-cols-2 md:grid-cols-4">
           <a
@@ -104,22 +91,15 @@ const sectionLinks = [
         </div>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section class="space-y-6">
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section class="space-y-4">
           <!-- ═══════ BASIC FIELDS ═══════ -->
-          <article id="basic-fields" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-100 px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                  <TextCursorInput class="h-5 w-5 text-amber-600" />
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold">Basic Fields</h2>
-                  <p class="text-sm text-slate-500">Title, slug, and excerpt inputs with validation.</p>
-                </div>
-              </div>
+          <article id="basic-fields" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+              <TextCursorInput class="h-4 w-4 text-amber-600" />
+              <h2 class="text-sm font-semibold text-slate-900">Basic Fields</h2>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <div class="grid gap-4 md:grid-cols-2">
                 <div class="space-y-1.5">
                   <label class="text-sm font-medium text-slate-700">Title</label>
@@ -159,14 +139,14 @@ const sectionLinks = [
                 </div>
               </div>
               <div class="mt-5 grid gap-4 md:grid-cols-2">
-                <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                   <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                   <div class="text-sm text-emerald-900">
                     <p class="mb-1 font-semibold">Do</p>
                     <p>Show validation on blur, not on every keystroke.</p>
                   </div>
                 </div>
-                <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                   <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                   <div class="text-sm text-amber-900">
                     <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -178,19 +158,12 @@ const sectionLinks = [
           </article>
 
           <!-- ═══════ CATEGORIZATION & PUBLISH ═══════ -->
-          <article id="categorization" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-100 px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-100">
-                  <FolderOpen class="h-5 w-5 text-cyan-600" />
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold">Categorization & Publish</h2>
-                  <p class="text-sm text-slate-500">Select fields and toggle controls for content workflow.</p>
-                </div>
-              </div>
+          <article id="categorization" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+              <FolderOpen class="h-4 w-4 text-cyan-600" />
+              <h2 class="text-sm font-semibold text-slate-900">Categorization & Publish</h2>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <div class="grid gap-4 md:grid-cols-2">
                 <div class="space-y-1.5">
                   <label class="text-sm font-medium text-slate-700">Category</label>
@@ -220,14 +193,14 @@ const sectionLinks = [
                 </div>
               </div>
               <div class="mt-5 grid gap-4 md:grid-cols-2">
-                <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                   <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                   <div class="text-sm text-emerald-900">
                     <p class="mb-1 font-semibold">Do</p>
                     <p>Pre-select sensible defaults for status and category.</p>
                   </div>
                 </div>
-                <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                   <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                   <div class="text-sm text-amber-900">
                     <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -239,19 +212,12 @@ const sectionLinks = [
           </article>
 
           <!-- ═══════ MEDIA & SEO ═══════ -->
-          <article id="media-seo" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-100 px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-                  <Image class="h-5 w-5 text-violet-600" />
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold">Media & SEO</h2>
-                  <p class="text-sm text-slate-500">Image uploads and search-engine metadata fields.</p>
-                </div>
-              </div>
+          <article id="media-seo" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+              <Image class="h-4 w-4 text-violet-600" />
+              <h2 class="text-sm font-semibold text-slate-900">Media & SEO</h2>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <div class="grid gap-4 md:grid-cols-2">
                 <div class="space-y-1.5">
                   <label class="text-sm font-medium text-slate-700">Featured Image URL</label>
@@ -287,19 +253,12 @@ const sectionLinks = [
           </article>
 
           <!-- ═══════ FORM ACTIONS ═══════ -->
-          <article id="actions" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-100 px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                  <Save class="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h2 class="text-lg font-semibold">Form Actions</h2>
-                  <p class="text-sm text-slate-500">Primary, secondary, and destructive submit patterns.</p>
-                </div>
-              </div>
+          <article id="actions" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+              <Save class="h-4 w-4 text-blue-600" />
+              <h2 class="text-sm font-semibold text-slate-900">Form Actions</h2>
             </div>
-            <div class="p-6">
+            <div class="p-4">
               <div class="flex flex-wrap items-center gap-3">
                 <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800" @click="submit">
                   Save Changes
@@ -308,14 +267,14 @@ const sectionLinks = [
                 <button class="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-700 shadow-sm transition-colors hover:bg-red-50">Delete</button>
               </div>
               <div class="mt-5 grid gap-4 md:grid-cols-2">
-                <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                   <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                   <div class="text-sm text-emerald-900">
                     <p class="mb-1 font-semibold">Do</p>
                     <p>Place the primary action first and destructive actions last.</p>
                   </div>
                 </div>
-                <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                   <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                   <div class="text-sm text-amber-900">
                     <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -328,15 +287,15 @@ const sectionLinks = [
         </section>
 
         <!-- ───── Live Preview Sidebar ───── -->
-        <aside class="space-y-6">
-          <article class="sticky top-6 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-100 px-5 py-3">
+        <aside class="space-y-4">
+          <article class="sticky top-6 rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="border-b border-slate-100 px-4 py-2.5">
               <div class="flex items-center gap-2">
                 <Eye class="h-4 w-4 text-slate-400" />
                 <h3 class="text-sm font-semibold">Live Preview</h3>
               </div>
             </div>
-            <div class="space-y-3 p-5 text-sm">
+            <div class="space-y-3 p-3 text-sm">
               <div class="rounded-lg border border-slate-200 bg-slate-50/50 p-3">
                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Title</p>
                 <p class="mt-1 font-medium text-slate-900">{{ form.title || '-' }}</p>

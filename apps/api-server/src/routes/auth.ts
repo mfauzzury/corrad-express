@@ -1,5 +1,9 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import bcrypt from "bcryptjs";
 import { Router } from "express";
+import multer from "multer";
 
 import { env, isProduction } from "../config/env.js";
 import { loginRateLimit } from "../middleware/rate-limit.js";
@@ -8,6 +12,26 @@ import type { AuthedRequest } from "../types.js";
 import { randomToken, signToken } from "../utils/crypto.js";
 import { sendError, sendOk } from "../utils/responses.js";
 import { loginSchema } from "./schemas.js";
+
+const avatarStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, env.uploadDir),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `avatar-${Date.now()}${ext}`);
+  },
+});
+
+const avatarUpload = multer({
+  storage: avatarStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!["image/png", "image/jpeg", "image/webp", "image/gif"].includes(file.mimetype)) {
+      cb(new Error("Only image files are allowed"));
+      return;
+    }
+    cb(null, true);
+  },
+});
 
 export const authRouter = Router();
 export const authPublicRouter = Router();
@@ -46,11 +70,7 @@ authPublicRouter.post("/login", loginRateLimit, async (req, res) => {
   });
 
   return sendOk(res, {
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-    },
+    user: userPayload(user),
   });
 });
 
@@ -65,17 +85,119 @@ authRouter.post("/logout", async (req, res) => {
   return sendOk(res, { success: true });
 });
 
+function userPayload(user: { id: number; email: string; name: string; photoUrl: string | null }) {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    photoUrl: user.photoUrl,
+  };
+}
+
 authRouter.get("/me", async (req: AuthedRequest, res) => {
   if (!req.auth) {
     return sendError(res, 401, "UNAUTHORIZED", "Authentication required");
   }
 
+  const user = await prisma.user.findUnique({ where: { id: req.auth.userId } });
+  if (!user) {
+    return sendError(res, 401, "UNAUTHORIZED", "User not found");
+  }
+
   return sendOk(res, {
-    user: {
-      id: req.auth.userId,
-      email: req.auth.email,
-      name: req.auth.name,
-    },
+    user: userPayload(user),
     csrfToken: req.csrfTokenValue ?? req.cookies?.[env.csrfCookieName] ?? "",
   });
+});
+
+authRouter.put("/me", async (req: AuthedRequest, res) => {
+  if (!req.auth) {
+    return sendError(res, 401, "UNAUTHORIZED", "Authentication required");
+  }
+
+  const { name, email } = req.body;
+  const data: Record<string, string> = {};
+  if (name) data.name = name;
+  if (email) data.email = email;
+
+  const user = await prisma.user.update({
+    where: { id: req.auth.userId },
+    data,
+  });
+
+  return sendOk(res, { user: userPayload(user) });
+});
+
+authRouter.post("/password", async (req: AuthedRequest, res) => {
+  if (!req.auth) {
+    return sendError(res, 401, "UNAUTHORIZED", "Authentication required");
+  }
+
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return sendError(res, 400, "VALIDATION_ERROR", "Current password and new password are required");
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: req.auth.userId } });
+  if (!user) {
+    return sendError(res, 401, "UNAUTHORIZED", "User not found");
+  }
+
+  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!valid) {
+    return sendError(res, 400, "INVALID_PASSWORD", "Current password is incorrect");
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: req.auth.userId },
+    data: { passwordHash },
+  });
+
+  return sendOk(res, { message: "Password changed successfully" });
+});
+
+authRouter.post("/avatar", avatarUpload.single("file"), async (req: AuthedRequest, res) => {
+  if (!req.auth) {
+    return sendError(res, 401, "UNAUTHORIZED", "Authentication required");
+  }
+
+  const file = req.file;
+  if (!file) {
+    return sendError(res, 400, "FILE_REQUIRED", "No file uploaded");
+  }
+
+  // Remove old avatar file if exists
+  const existing = await prisma.user.findUnique({ where: { id: req.auth.userId } });
+  if (existing?.photoUrl) {
+    const oldPath = path.join(env.uploadDir, path.basename(existing.photoUrl));
+    try { fs.unlinkSync(oldPath); } catch { /* noop */ }
+  }
+
+  const photoUrl = `/uploads/${file.filename}`;
+  const user = await prisma.user.update({
+    where: { id: req.auth.userId },
+    data: { photoUrl },
+  });
+
+  return sendOk(res, { user: userPayload(user) });
+});
+
+authRouter.delete("/avatar", async (req: AuthedRequest, res) => {
+  if (!req.auth) {
+    return sendError(res, 401, "UNAUTHORIZED", "Authentication required");
+  }
+
+  const existing = await prisma.user.findUnique({ where: { id: req.auth.userId } });
+  if (existing?.photoUrl) {
+    const oldPath = path.join(env.uploadDir, path.basename(existing.photoUrl));
+    try { fs.unlinkSync(oldPath); } catch { /* noop */ }
+  }
+
+  const user = await prisma.user.update({
+    where: { id: req.auth.userId },
+    data: { photoUrl: null },
+  });
+
+  return sendOk(res, { user: userPayload(user) });
 });

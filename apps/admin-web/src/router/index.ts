@@ -10,6 +10,8 @@ import PageEditorView from "@/views/PageEditorView.vue";
 import PagesListView from "@/views/PagesListView.vue";
 import PostEditorView from "@/views/PostEditorView.vue";
 import PostsListView from "@/views/PostsListView.vue";
+import CategoriesListView from "@/views/CategoriesListView.vue";
+import CategoryEditorView from "@/views/CategoryEditorView.vue";
 import MenusView from "@/views/MenusView.vue";
 import RolesView from "@/views/RolesView.vue";
 import SettingsView from "@/views/SettingsView.vue";
@@ -26,6 +28,9 @@ const router = createRouter({
     { path: "/posts", name: "posts", component: PostsListView, meta: { requiresAuth: true, title: "Posts" } },
     { path: "/posts/new", name: "post-create", component: PostEditorView, meta: { requiresAuth: true, title: "New Post" } },
     { path: "/posts/:id", name: "post-edit", component: PostEditorView, meta: { requiresAuth: true, title: "Edit Post" } },
+    { path: "/categories", name: "categories", component: CategoriesListView, meta: { requiresAuth: true, title: "Categories" } },
+    { path: "/categories/new", name: "category-create", component: CategoryEditorView, meta: { requiresAuth: true, title: "New Category" } },
+    { path: "/categories/:id", name: "category-edit", component: CategoryEditorView, meta: { requiresAuth: true, title: "Edit Category" } },
     { path: "/pages", name: "pages", component: PagesListView, meta: { requiresAuth: true, title: "Pages" } },
     { path: "/pages/new", name: "page-create", component: PageEditorView, meta: { requiresAuth: true, title: "New Page" } },
     { path: "/pages/:id", name: "page-edit", component: PageEditorView, meta: { requiresAuth: true, title: "Edit Page" } },
@@ -34,6 +39,7 @@ const router = createRouter({
     { path: "/kitchen-sink", name: "kitchen-sink", component: KitchenSinkView, meta: { requiresAuth: true, title: "Kitchen Sink" } },
     { path: "/kitchen-sink/forms", name: "kitchen-forms", component: KitchenFormsView, meta: { requiresAuth: true, title: "Forms" } },
     { path: "/kitchen-sink/charts", name: "kitchen-charts", component: KitchenChartsView, meta: { requiresAuth: true, title: "Charts" } },
+    { path: "/profile", name: "profile", component: () => import("@/views/ProfileView.vue"), meta: { requiresAuth: true, title: "My Profile" } },
     { path: "/settings", name: "settings", component: SettingsView, meta: { requiresAuth: true, title: "Settings" } },
     { path: "/settings/users", name: "settings-users", component: UsersView, meta: { requiresAuth: true, title: "Users" } },
     { path: "/settings/roles", name: "settings-roles", component: RolesView, meta: { requiresAuth: true, title: "Roles" } },

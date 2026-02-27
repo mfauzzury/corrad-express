@@ -18,6 +18,7 @@ export const postInputSchema = z.object({
   content: z.string().min(1),
   status: statusSchema.default("draft"),
   featuredImageId: z.number().int().nullable().optional(),
+  categoryIds: z.array(z.number().int()).optional(),
 });
 
 export const pageInputSchema = z.object({
@@ -25,6 +26,7 @@ export const pageInputSchema = z.object({
   slug: z.string().optional(),
   content: z.string().min(1),
   status: statusSchema.default("draft"),
+  featuredImageId: z.number().int().nullable().optional(),
 });
 
 export const settingsInputSchema = z.object({
@@ -36,9 +38,23 @@ export const settingsInputSchema = z.object({
   faviconUrl: z.string().default(""),
   language: z.string().min(1),
   timezone: z.string().min(1),
+  footerText: z.string().default(""),
 });
 
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
+});
+
+export const categoryInputSchema = z.object({
+  name: z.string().min(1),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export const adminMenuPrefsSchema = z.object({
+  groupOrder: z.array(z.string()),
+  itemOrder: z.record(z.string(), z.array(z.string())),
+  hidden: z.array(z.string()),
+  hiddenGroups: z.array(z.string()).default([]),
 });

@@ -2,18 +2,18 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
-  FileText,
-  PenLine,
   Save,
   X,
   Type,
-  Settings,
-  Image,
+  Upload,
+  ImagePlus,
+  Trash2,
 } from "lucide-vue-next";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
-import { createPost, getPost, listMedia, updatePost } from "@/api/cms";
-import type { Media, PublishStatus } from "@/types";
+import { createPost, getPost, listMedia, listCategories, updatePost, uploadMedia } from "@/api/cms";
+import { API_BASE_URL } from "@/env";
+import type { Category, Media, PublishStatus } from "@/types";
 
 const route = useRoute();
 const router = useRouter();
@@ -28,14 +28,38 @@ const content = ref("");
 const status = ref<PublishStatus>("draft");
 const featuredImageId = ref<number | null>(null);
 const mediaItems = ref<Media[]>([]);
+const categories = ref<Category[]>([]);
+const selectedCategoryIds = ref<number[]>([]);
+const uploading = ref(false);
+const fileInput = ref<HTMLInputElement | null>(null);
+const showMediaPicker = ref(false);
+
+function resolveUrl(url: string) {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  return `${API_BASE_URL}${url}`;
+}
+
+const selectedImage = computed(() =>
+  mediaItems.value.find((m) => m.id === featuredImageId.value) ?? null,
+);
+
+const imageMediaItems = computed(() =>
+  mediaItems.value.filter((m) => m.mimeType.startsWith("image/")),
+);
 
 async function loadMedia() {
   const response = await listMedia();
   mediaItems.value = response.data;
 }
 
+async function loadCategories() {
+  const response = await listCategories("?limit=100");
+  categories.value = response.data;
+}
+
 async function load() {
-  await loadMedia();
+  await Promise.all([loadMedia(), loadCategories()]);
   if (!isEdit.value) return;
   const response = await getPost(id.value);
   const post = response.data;
@@ -45,6 +69,22 @@ async function load() {
   content.value = post.content;
   status.value = post.status;
   featuredImageId.value = post.featuredImageId ?? null;
+  selectedCategoryIds.value = post.categories?.map((c) => c.id) ?? [];
+}
+
+async function handleUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+  uploading.value = true;
+  try {
+    const response = await uploadMedia(file);
+    mediaItems.value.unshift(response.data);
+    featuredImageId.value = response.data.id;
+  } finally {
+    uploading.value = false;
+    input.value = "";
+  }
 }
 
 async function save() {
@@ -55,6 +95,7 @@ async function save() {
     content: content.value,
     status: status.value,
     featuredImageId: featuredImageId.value,
+    categoryIds: selectedCategoryIds.value,
   };
 
   if (isEdit.value) {
@@ -71,110 +112,182 @@ onMounted(load);
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
-      <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
-              {{ isEdit ? 'Edit Post' : 'Create Post' }}
-            </h1>
-            <p class="mt-1 text-slate-500">{{ isEdit ? 'Update your post content and settings.' : 'Write and publish a new blog post.' }}</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /posts/{{ isEdit ? id : 'new' }}
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="mx-auto max-w-7xl space-y-4">
+      <!-- ───── Title ───── -->
+      <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">{{ isEdit ? 'Edit Post' : 'Create Post' }}</h1>
 
-      <!-- ═══════ CONTENT ═══════ -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-              <Type class="h-5 w-5 text-blue-600" />
+      <div class="grid gap-4 lg:grid-cols-[1fr_320px]">
+        <!-- ═══════ LEFT COLUMN — Content ═══════ -->
+        <div class="space-y-4">
+          <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+              <Type class="h-4 w-4 text-blue-600" />
+              <h2 class="text-sm font-semibold text-slate-900">Content</h2>
             </div>
-            <div>
-              <h2 class="text-lg font-semibold">Content</h2>
-              <p class="text-sm text-slate-500">Post title, slug, and body content.</p>
+            <div class="space-y-3 p-4">
+              <div class="grid gap-3 md:grid-cols-2">
+                <div class="space-y-1.5">
+                  <label class="text-sm font-medium text-slate-700">Title</label>
+                  <input v-model="title" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Enter post title" />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-sm font-medium text-slate-700">Slug</label>
+                  <input v-model="slug" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="auto-generated-from-title" />
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-slate-700">Excerpt</label>
+                <textarea v-model="excerpt" rows="2" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Brief summary of the post..." />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-slate-700">Content</label>
+                <textarea v-model="content" rows="16" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Write your post content here..." />
+              </div>
             </div>
-          </div>
+          </article>
         </div>
-        <div class="space-y-4 p-6">
-          <div class="grid gap-4 md:grid-cols-2">
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Title</label>
-              <input v-model="title" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Enter post title" />
-            </div>
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Slug</label>
-              <input v-model="slug" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="auto-generated-from-title" />
-            </div>
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-sm font-medium text-slate-700">Excerpt</label>
-            <textarea v-model="excerpt" rows="2" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Brief summary of the post..." />
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-sm font-medium text-slate-700">Content</label>
-            <textarea v-model="content" rows="10" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Write your post content here..." />
-          </div>
-        </div>
-      </article>
 
-      <!-- ═══════ SETTINGS ═══════ -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-              <Settings class="h-5 w-5 text-violet-600" />
+        <!-- ═══════ RIGHT COLUMN — Settings, Categories, Actions ═══════ -->
+        <div class="space-y-4">
+          <!-- Actions -->
+          <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="border-b border-slate-100 px-4 py-2.5">
+              <h3 class="text-sm font-semibold text-slate-900">Publish</h3>
             </div>
-            <div>
-              <h2 class="text-lg font-semibold">Settings</h2>
-              <p class="text-sm text-slate-500">Publishing status and featured image.</p>
+            <div class="space-y-3 p-3">
+              <div class="space-y-1.5">
+                <label class="text-sm font-medium text-slate-700">Status</label>
+                <select v-model="status" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2 pt-1">
+                <button
+                  class="flex flex-1 items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
+                  @click="save"
+                >
+                  <Save class="h-4 w-4" />
+                  {{ isEdit ? 'Update' : 'Publish' }}
+                </button>
+                <button
+                  class="flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+                  @click="router.push('/posts')"
+                >
+                  <X class="h-4 w-4" />
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="grid gap-4 md:grid-cols-2">
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Status</label>
-              <select v-model="status" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Featured Image</label>
-              <select v-model.number="featuredImageId" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
-                <option :value="null">None</option>
-                <option v-for="m in mediaItems" :key="m.id" :value="m.id">{{ m.originalName }}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </article>
+          </article>
 
-      <!-- ═══════ ACTIONS ═══════ -->
-      <div class="flex items-center gap-3">
-        <button
-          class="flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
-          @click="save"
-        >
-          <Save class="h-4 w-4" />
-          {{ isEdit ? 'Update Post' : 'Create Post' }}
-        </button>
-        <button
-          class="flex items-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
-          @click="router.push('/posts')"
-        >
-          <X class="h-4 w-4" />
-          Cancel
-        </button>
+          <!-- Categories -->
+          <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="border-b border-slate-100 px-4 py-2.5">
+              <h3 class="text-sm font-semibold text-slate-900">Categories</h3>
+            </div>
+            <div class="p-3">
+              <div v-if="categories.length === 0" class="text-sm text-slate-400">No categories available.</div>
+              <div v-else class="max-h-48 space-y-1 overflow-y-auto">
+                <label
+                  v-for="cat in categories"
+                  :key="cat.id"
+                  class="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-slate-50"
+                >
+                  <input
+                    type="checkbox"
+                    :value="cat.id"
+                    v-model="selectedCategoryIds"
+                    class="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                  />
+                  <span class="text-slate-700">{{ cat.name }}</span>
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <!-- Featured Image -->
+          <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div class="border-b border-slate-100 px-4 py-2.5">
+              <h3 class="text-sm font-semibold text-slate-900">Featured Image</h3>
+            </div>
+            <div class="p-3">
+              <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleUpload" />
+
+              <!-- Thumbnail preview when image is set -->
+              <div v-if="selectedImage" class="space-y-3">
+                <div class="overflow-hidden rounded-lg border border-slate-200">
+                  <img :src="resolveUrl(selectedImage.url)" :alt="selectedImage.originalName" class="w-full object-cover" />
+                </div>
+                <p class="truncate text-xs text-slate-500">{{ selectedImage.originalName }}</p>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    class="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50"
+                    :disabled="uploading"
+                    @click="fileInput?.click()"
+                  >
+                    <Upload class="h-3.5 w-3.5" />
+                    {{ uploading ? 'Uploading...' : 'Replace' }}
+                  </button>
+                  <button
+                    type="button"
+                    class="flex items-center justify-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50"
+                    @click="featuredImageId = null"
+                  >
+                    <Trash2 class="h-3.5 w-3.5" />
+                    Remove
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  class="w-full text-center text-xs font-medium text-violet-600 transition-colors hover:text-violet-700"
+                  @click="showMediaPicker = !showMediaPicker"
+                >
+                  {{ showMediaPicker ? 'Hide media library' : 'Choose from media library' }}
+                </button>
+              </div>
+
+              <!-- Empty state when no image -->
+              <div v-else class="space-y-3">
+                <button
+                  type="button"
+                  class="flex w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 px-3 py-4 text-sm transition-colors hover:border-slate-400 hover:bg-slate-50"
+                  :disabled="uploading"
+                  @click="fileInput?.click()"
+                >
+                  <ImagePlus class="h-6 w-6 text-slate-400" />
+                  <span class="font-medium text-slate-600">{{ uploading ? 'Uploading...' : 'Upload Image' }}</span>
+                  <span class="text-xs text-slate-400">Click to select a file</span>
+                </button>
+                <button
+                  type="button"
+                  class="w-full text-center text-xs font-medium text-violet-600 transition-colors hover:text-violet-700"
+                  @click="showMediaPicker = !showMediaPicker"
+                >
+                  {{ showMediaPicker ? 'Hide media library' : 'Choose from media library' }}
+                </button>
+              </div>
+
+              <!-- Media library picker -->
+              <div v-if="showMediaPicker" class="mt-3 border-t border-slate-100 pt-3">
+                <div v-if="imageMediaItems.length === 0" class="text-center text-xs text-slate-400">No images in library.</div>
+                <div v-else class="grid max-h-52 grid-cols-3 gap-1.5 overflow-y-auto">
+                  <button
+                    v-for="m in imageMediaItems"
+                    :key="m.id"
+                    type="button"
+                    class="group relative aspect-square overflow-hidden rounded-md border-2 transition-all"
+                    :class="featuredImageId === m.id ? 'border-violet-500 ring-2 ring-violet-200' : 'border-transparent hover:border-slate-300'"
+                    @click="featuredImageId = m.id; showMediaPicker = false"
+                  >
+                    <img :src="resolveUrl(m.url)" :alt="m.originalName" class="h-full w-full object-cover" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </AdminLayout>

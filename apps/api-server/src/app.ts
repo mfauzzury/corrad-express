@@ -13,6 +13,7 @@ import { dashboardRouter } from "./routes/dashboard.js";
 import { healthRouter } from "./routes/health.js";
 import { mediaRouter } from "./routes/media.js";
 import { pagesRouter } from "./routes/pages.js";
+import { categoriesRouter } from "./routes/categories.js";
 import { postsRouter } from "./routes/posts.js";
 import { settingsRouter } from "./routes/settings.js";
 import { sendError } from "./utils/responses.js";
@@ -40,6 +41,9 @@ app.use((req, res, next) => {
   if (req.path === "/api/health" || req.path === "/api/auth/login") {
     return next();
   }
+  if (req.path === "/api/settings" && req.method === "GET") {
+    return next();
+  }
   return requireAuth(req, res, next);
 });
 
@@ -49,6 +53,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postsRouter);
+app.use("/api/categories", categoriesRouter);
 app.use("/api/pages", pagesRouter);
 app.use("/api/media", mediaRouter);
 app.use("/api/settings", settingsRouter);

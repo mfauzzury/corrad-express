@@ -30,6 +30,7 @@ const form = ref<SettingsPayload>({
   faviconUrl: "",
   language: "en",
   timezone: "UTC",
+  footerText: "",
 });
 
 const saved = ref(false);
@@ -108,39 +109,21 @@ onMounted(load);
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Settings</h1>
-            <p class="mt-1 text-slate-500">Manage your site identity, SEO defaults, and localization.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /settings
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Settings</h1>
       </div>
 
-      <div class="space-y-6">
+      <div class="space-y-4">
         <!-- ═══════ GENERAL ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-                <Globe class="h-5 w-5 text-violet-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">General</h2>
-                <p class="text-sm text-slate-500">Site identity and localization preferences.</p>
-              </div>
-            </div>
+        <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Globe class="h-4 w-4 text-violet-600" />
+            <h2 class="text-sm font-semibold text-slate-900">General</h2>
           </div>
-          <div class="p-6">
-            <div class="grid gap-4 md:grid-cols-2">
+          <div class="p-4">
+            <div class="grid gap-3 md:grid-cols-2">
               <div class="space-y-1.5">
                 <label class="text-sm font-medium text-slate-700">Site Title</label>
                 <input v-model="form.siteTitle" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" />
@@ -157,25 +140,23 @@ onMounted(load);
                 <label class="text-sm font-medium text-slate-700">Timezone</label>
                 <input v-model="form.timezone" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" />
               </div>
+              <div class="space-y-1.5 md:col-span-2">
+                <label class="text-sm font-medium text-slate-700">Footer Text</label>
+                <input v-model="form.footerText" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="e.g. © 2026 My Company" />
+                <p class="text-xs text-slate-400">Displayed at the bottom of the sidebar.</p>
+              </div>
             </div>
           </div>
         </article>
 
         <!-- ═══════ SEO ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                <Search class="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">SEO</h2>
-                <p class="text-sm text-slate-500">Search engine optimization defaults.</p>
-              </div>
-            </div>
+        <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Search class="h-4 w-4 text-blue-600" />
+            <h2 class="text-sm font-semibold text-slate-900">SEO</h2>
           </div>
-          <div class="p-6">
-            <div class="grid gap-4 md:grid-cols-2">
+          <div class="p-4">
+            <div class="grid gap-3 md:grid-cols-2">
               <div class="space-y-1.5 md:col-span-2">
                 <label class="text-sm font-medium text-slate-700">Title Format</label>
                 <input v-model="form.titleFormat" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" />
@@ -190,20 +171,13 @@ onMounted(load);
         </article>
 
         <!-- ═══════ BRANDING ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                <Image class="h-5 w-5 text-amber-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Branding</h2>
-                <p class="text-sm text-slate-500">Site icon and favicon assets.</p>
-              </div>
-            </div>
+        <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Image class="h-4 w-4 text-amber-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Branding</h2>
           </div>
-          <div class="p-6">
-            <div class="grid gap-6 md:grid-cols-2">
+          <div class="p-4">
+            <div class="grid gap-3 md:grid-cols-2">
               <!-- Site Icon -->
               <div class="space-y-3">
                 <label class="text-sm font-medium text-slate-700">Site Icon</label>

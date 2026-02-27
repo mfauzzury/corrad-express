@@ -8,6 +8,8 @@ export type User = {
   id: number;
   email: string;
   name: string;
+  photoUrl?: string;
+  role?: string;
 };
 
 export type PostInput = {
@@ -17,6 +19,7 @@ export type PostInput = {
   content: string;
   status: PublishStatus;
   featuredImageId?: number | null;
+  categoryIds?: number[];
 };
 
 export type Post = PostInput & {
@@ -26,6 +29,23 @@ export type Post = PostInput & {
   createdAt: string;
   updatedAt: string;
   featuredImage?: Media | null;
+  categories?: Category[];
+};
+
+export type CategoryInput = {
+  name: string;
+  slug?: string;
+  description?: string;
+};
+
+export type Category = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { posts: number };
 };
 
 export type PageInput = {
@@ -33,6 +53,7 @@ export type PageInput = {
   slug?: string;
   content: string;
   status: PublishStatus;
+  featuredImageId?: number | null;
 };
 
 export type Page = PageInput & {
@@ -41,6 +62,7 @@ export type Page = PageInput & {
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  featuredImage?: Media | null;
 };
 
 export type Media = {
@@ -66,19 +88,8 @@ export type SettingsPayload = {
   faviconUrl: string;
   language: string;
   timezone: string;
+  footerText: string;
 };
-
-export type AdminMenuItem = {
-  id: number;
-  label: string;
-  url: string;
-  icon: string;
-  parentId: number | null;
-  order: number;
-  isVisible: boolean;
-};
-
-export type AdminMenuItemInput = Omit<AdminMenuItem, "id">;
 
 export type Role = {
   id: number;

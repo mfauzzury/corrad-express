@@ -49,6 +49,7 @@ export type SettingsPayload = {
   faviconUrl: string;
   language: string;
   timezone: string;
+  footerText: string;
 };
 
 export type AuthedRequest = Request & {

@@ -43,76 +43,66 @@ onMounted(load);
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Pages</h1>
-            <p class="mt-1 text-slate-500">Create, edit, and manage your site pages.</p>
-          </div>
-          <button
-            class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
-            @click="router.push('/pages/new')"
-          >
-            <Plus class="h-4 w-4" />
-            Add Page
-          </button>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Pages</h1>
+        <button
+          class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
+          @click="router.push('/pages/new')"
+        >
+          <Plus class="h-4 w-4" />
+          Add Page
+        </button>
       </div>
 
       <!-- ───── Table Card ───── -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-              <FileText class="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold">All Pages</h2>
-              <p class="text-sm text-slate-500">{{ rows.length }} page{{ rows.length !== 1 ? 's' : '' }} found.</p>
-            </div>
+      <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-100 px-4 py-2.5">
+          <div class="flex items-center gap-2">
+            <FileText class="h-4 w-4 text-emerald-600" />
+            <h2 class="text-sm font-semibold text-slate-900">All Pages</h2>
+            <span class="text-xs text-slate-500 ml-1">{{ rows.length }} page{{ rows.length !== 1 ? 's' : '' }}</span>
           </div>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-slate-100 text-left">
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Title</th>
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Slug</th>
-                <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Title</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Slug</th>
+                <th class="px-4 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               <tr v-for="item in rows" :key="item.id" class="transition-colors hover:bg-slate-50">
-                <td class="px-6 py-3 font-medium text-slate-900">{{ item.title }}</td>
-                <td class="px-6 py-3">
+                <td class="px-4 py-2 font-medium text-slate-900">{{ item.title }}</td>
+                <td class="px-4 py-2">
                   <span class="rounded-full px-2.5 py-0.5 text-xs font-medium" :class="statusColor(item.status)">{{ item.status }}</span>
                 </td>
-                <td class="px-6 py-3 font-mono text-xs text-slate-500">{{ item.slug }}</td>
-                <td class="px-6 py-3 text-right">
+                <td class="px-4 py-2 font-mono text-xs text-slate-500">{{ item.slug }}</td>
+                <td class="px-4 py-2 text-right">
                   <div class="flex items-center justify-end gap-1.5">
                     <button
-                      class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                      class="group relative flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
                       @click="router.push(`/pages/${item.id}`)"
-                      title="Edit"
                     >
                       <Pencil class="h-3.5 w-3.5" />
+                      <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Edit</span>
                     </button>
                     <button
-                      class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
+                      class="group relative flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
                       @click="remove(item.id)"
-                      title="Delete"
                     >
                       <Trash2 class="h-3.5 w-3.5" />
+                      <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Delete</span>
                     </button>
                   </div>
                 </td>
               </tr>
               <tr v-if="rows.length === 0">
-                <td colspan="4" class="px-6 py-8 text-center text-sm text-slate-400">No pages found.</td>
+                <td colspan="4" class="px-4 py-6 text-center text-sm text-slate-400">No pages found.</td>
               </tr>
             </tbody>
           </table>

@@ -59,28 +59,17 @@ function nextPage(delta: number) {
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
-      <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">UI Standard Reference</h1>
-            <p class="mt-1 text-slate-500">Single-source guideline for all new UI implementation.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-              {{ sectionLinks.length }} Components
-            </div>
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /kitchen-sink
-            </div>
-          </div>
+    <div class="mx-auto max-w-7xl space-y-4">
+      <!-- ───── Slim Title Bar ───── -->
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">UI Standard Reference</h1>
+        <div class="flex items-center gap-2">
+          <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ sectionLinks.length }} Components</span>
         </div>
       </div>
 
       <!-- ───── Quick Jump Nav ───── -->
-      <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Quick Jump</p>
         <div class="grid gap-1.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <a
@@ -95,21 +84,14 @@ function nextPage(delta: number) {
         </div>
       </div>
 
-      <section class="space-y-6">
+      <section class="space-y-4">
         <!-- ═══════ OVERVIEW ═══════ -->
-        <article id="overview" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100">
-                <Layers class="h-5 w-5 text-slate-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Overview</h2>
-                <p class="text-sm text-slate-500">Rules for applying this guide consistently across new pages.</p>
-              </div>
-            </div>
+        <article id="overview" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Layers class="h-4 w-4 text-slate-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Overview</h2>
           </div>
-          <div class="p-6">
+          <div class="p-4">
             <div class="grid gap-4 md:grid-cols-2">
               <div class="rounded-lg border border-slate-200 bg-slate-50/50 p-5">
                 <p class="mb-3 text-sm font-semibold text-slate-900">Usage rules</p>
@@ -133,42 +115,35 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ COLOR & TYPOGRAPHY ═══════ -->
-        <article id="tokens" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-                <Palette class="h-5 w-5 text-violet-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Color & Typography</h2>
-                <p class="text-sm text-slate-500">Current tokens from <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">app/globals.css</code> used in this project.</p>
-              </div>
-            </div>
+        <article id="tokens" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Palette class="h-4 w-4 text-violet-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Color & Typography</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div class="group overflow-hidden rounded-xl border border-slate-200 transition-shadow hover:shadow-md">
+              <div class="group overflow-hidden rounded-lg border border-slate-200 transition-shadow hover:shadow-md">
                 <div class="h-20 bg-slate-900" />
                 <div class="p-3">
                   <p class="text-sm font-semibold">primary</p>
                   <p class="font-mono text-xs text-slate-400">slate-900</p>
                 </div>
               </div>
-              <div class="group overflow-hidden rounded-xl border border-slate-200 transition-shadow hover:shadow-md">
+              <div class="group overflow-hidden rounded-lg border border-slate-200 transition-shadow hover:shadow-md">
                 <div class="h-20 bg-slate-200" />
                 <div class="p-3">
                   <p class="text-sm font-semibold">secondary</p>
                   <p class="font-mono text-xs text-slate-400">slate-200</p>
                 </div>
               </div>
-              <div class="group overflow-hidden rounded-xl border border-slate-200 transition-shadow hover:shadow-md">
+              <div class="group overflow-hidden rounded-lg border border-slate-200 transition-shadow hover:shadow-md">
                 <div class="h-20 bg-slate-100" />
                 <div class="p-3">
                   <p class="text-sm font-semibold">accent</p>
                   <p class="font-mono text-xs text-slate-400">slate-100</p>
                 </div>
               </div>
-              <div class="group overflow-hidden rounded-xl border border-slate-200 transition-shadow hover:shadow-md">
+              <div class="group overflow-hidden rounded-lg border border-slate-200 transition-shadow hover:shadow-md">
                 <div class="h-20 bg-red-600" />
                 <div class="p-3">
                   <p class="text-sm font-semibold">destructive</p>
@@ -177,7 +152,7 @@ function nextPage(delta: number) {
               </div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6">
+              <div class="rounded-lg border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
                 <p class="text-3xl font-semibold tracking-tight">Heading / 30-36px</p>
                 <p class="mt-2 text-slate-500">For page titles and section hierarchy.</p>
                 <div class="mt-3 flex gap-2">
@@ -185,7 +160,7 @@ function nextPage(delta: number) {
                   <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-500">tracking-tight</span>
                 </div>
               </div>
-              <div class="rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6">
+              <div class="rounded-lg border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
                 <p class="text-base">Body / 14-16px</p>
                 <p class="mt-2 text-sm text-slate-500">For labels, descriptions, and table values.</p>
                 <div class="mt-3 flex gap-2">
@@ -198,22 +173,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ BUTTONS ═══════ -->
-        <article id="buttons" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                <MousePointerClick class="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Buttons</h2>
-                <p class="text-sm text-slate-500">Primary actions, secondary actions, and low-emphasis actions.</p>
-              </div>
-            </div>
+        <article id="buttons" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <MousePointerClick class="h-4 w-4 text-blue-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Buttons</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="flex flex-wrap gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="flex flex-wrap gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800">Save changes</button>
                 <button class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-slate-50">Cancel</button>
                 <button class="rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-300">Preview</button>
@@ -223,7 +191,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 p-5">
+              <div class="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 p-5">
                 <button class="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm">Small</button>
                 <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm">Default</button>
                 <button class="rounded-lg bg-slate-900 px-5 py-2.5 text-base font-medium text-white shadow-sm">Large</button>
@@ -232,21 +200,21 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 p-5">
+              <div class="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 p-5">
                 <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm">Default</button>
                 <button disabled class="cursor-not-allowed rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-400">Disabled</button>
                 <button class="rounded-lg border-2 border-red-300 bg-red-50 px-4 py-2 text-sm font-medium text-red-700">Invalid</button>
               </div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use one clear primary CTA per section, then fallback actions as outline/ghost.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -258,22 +226,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ BADGES ═══════ -->
-        <article id="badges" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-                <Tag class="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Badges</h2>
-                <p class="text-sm text-slate-500">Compact status indicators for records and chips.</p>
-              </div>
-            </div>
+        <article id="badges" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Tag class="h-4 w-4 text-emerald-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Badges</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="flex flex-wrap gap-2.5 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="flex flex-wrap gap-2.5 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white">Published</span>
                 <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700">Draft</span>
                 <span class="rounded-full border border-slate-300 px-3 py-1 text-xs font-medium text-slate-700">Archived</span>
@@ -284,7 +245,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="flex flex-wrap gap-2.5 rounded-xl border border-slate-200 p-5">
+              <div class="flex flex-wrap gap-2.5 rounded-lg border border-slate-200 p-5">
                 <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white">Default</span>
                 <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium text-slate-700">Secondary</span>
                 <span class="rounded-full border border-slate-300 px-3 py-1 text-xs font-medium text-slate-700">Outline</span>
@@ -293,7 +254,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 p-5">
+              <div class="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 p-5">
                 <span class="flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white">
                   <span class="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   Active
@@ -302,14 +263,14 @@ function nextPage(delta: number) {
               </div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use badges for short statuses and keep wording consistent across screens.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -321,22 +282,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ INPUTS ═══════ -->
-        <article id="inputs" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                <TextCursorInput class="h-5 w-5 text-amber-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Inputs, Label, Textarea</h2>
-                <p class="text-sm text-slate-500">Baseline form controls for data capture.</p>
-              </div>
-            </div>
+        <article id="inputs" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <TextCursorInput class="h-4 w-4 text-amber-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Inputs, Label, Textarea</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="grid gap-4 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5 md:grid-cols-2">
+              <div class="grid gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5 md:grid-cols-2">
                 <div class="space-y-1.5">
                   <label class="text-sm font-medium text-slate-700">Title</label>
                   <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Enter title" />
@@ -353,7 +307,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="grid gap-4 rounded-xl border border-slate-200 p-5 md:grid-cols-3">
+              <div class="grid gap-4 rounded-lg border border-slate-200 p-5 md:grid-cols-3">
                 <div class="space-y-1.5">
                   <label class="text-xs font-medium text-slate-500">Default</label>
                   <input class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm" placeholder="Default" />
@@ -371,7 +325,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="space-y-2 rounded-xl border border-slate-200 p-5 text-sm">
+              <div class="space-y-2 rounded-lg border border-slate-200 p-5 text-sm">
                 <div class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white p-3">
                   <span class="h-2 w-2 rounded-full bg-slate-400" />
                   <span class="font-medium text-slate-700">Default:</span> editable and readable.
@@ -387,14 +341,14 @@ function nextPage(delta: number) {
               </div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Pair every input with a clear label and nearby validation message.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -406,22 +360,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ SELECT ═══════ -->
-        <article id="select" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-cyan-100">
-                <ListFilter class="h-5 w-5 text-cyan-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Select</h2>
-                <p class="text-sm text-slate-500">Controlled choice field for categorical values.</p>
-              </div>
-            </div>
+        <article id="select" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <ListFilter class="h-4 w-4 text-cyan-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Select</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <div class="max-w-sm space-y-1.5">
                   <label class="text-sm font-medium text-slate-700">Status</label>
                   <select v-model="selectValue" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
@@ -434,7 +381,7 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="flex flex-wrap gap-4 rounded-xl border border-slate-200 p-5">
+              <div class="flex flex-wrap gap-4 rounded-lg border border-slate-200 p-5">
                 <div class="space-y-1.5">
                   <label class="text-xs font-medium text-slate-500">Default</label>
                   <select class="w-44 rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm"><option>Active</option></select>
@@ -447,17 +394,17 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Use default state for required fields and keep options concise.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Use default state for required fields and keep options concise.</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use select when options are finite and mutually exclusive.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -469,22 +416,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ TABS ═══════ -->
-        <article id="tabs" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-pink-100">
-                <PanelTop class="h-5 w-5 text-pink-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Tabs</h2>
-                <p class="text-sm text-slate-500">Segment related content in one page context.</p>
-              </div>
-            </div>
+        <article id="tabs" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <PanelTop class="h-4 w-4 text-pink-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Tabs</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <div class="inline-flex rounded-lg bg-slate-200/60 p-1 text-sm">
                   <button
                     :class="activeTab === 'content' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
@@ -511,21 +451,21 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Use 2-5 tabs max. Keep tab labels short and noun-based.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Use 2-5 tabs max. Keep tab labels short and noun-based.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Active tab must be visually obvious and keyboard accessible.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Active tab must be visually obvious and keyboard accessible.</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use tabs for related content under the same task context.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -537,42 +477,35 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ DIALOG ═══════ -->
-        <article id="dialog" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100">
-                <MessageSquare class="h-5 w-5 text-indigo-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Dialog</h2>
-                <p class="text-sm text-slate-500">Use for short focused actions that need interruption.</p>
-              </div>
-            </div>
+        <article id="dialog" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <MessageSquare class="h-4 w-4 text-indigo-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Dialog</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <button class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-slate-50" @click="dialogOpen = true">Open confirmation dialog</button>
               </div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Prefer one primary and one secondary action in dialogs.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Prefer one primary and one secondary action in dialogs.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">For destructive actions, use <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">destructive</code> button styling and explicit confirmation text.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">For destructive actions, use <code class="rounded bg-slate-100 px-1 py-0.5 text-xs">destructive</code> button styling and explicit confirmation text.</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Keep dialog content concise and task-specific.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -584,28 +517,21 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ DROPDOWN ═══════ -->
-        <article id="dropdown" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-100">
-                <ChevronDown class="h-5 w-5 text-teal-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Dropdown Menu</h2>
-                <p class="text-sm text-slate-500">Compact action menu for contextual actions.</p>
-              </div>
-            </div>
+        <article id="dropdown" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <ChevronDown class="h-4 w-4 text-teal-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Dropdown Menu</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <div class="relative inline-block">
                   <button class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-slate-50" @click="dropdownOpen = !dropdownOpen">
                     Open menu
                     <ChevronDown class="h-4 w-4 text-slate-400" />
                   </button>
-                  <div v-if="dropdownOpen" class="absolute left-0 top-11 z-10 w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+                  <div v-if="dropdownOpen" class="absolute left-0 top-11 z-10 w-56 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg">
                     <p class="px-2.5 py-1.5 text-xs font-semibold text-slate-400">Post actions</p>
                     <div class="my-1 border-t border-slate-100" />
                     <button class="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors hover:bg-slate-100">
@@ -629,25 +555,25 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Mix item, checkbox, and radio entries only when needed for real context actions.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Mix item, checkbox, and radio entries only when needed for real context actions.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="flex items-center gap-3 rounded-xl border border-slate-200 p-5 text-sm text-slate-600">
+              <div class="flex items-center gap-3 rounded-lg border border-slate-200 p-5 text-sm text-slate-600">
                 Current status:
                 <span class="rounded-full bg-slate-900 px-2.5 py-0.5 text-xs font-medium text-white">{{ dropdownStatus }}</span>
                 <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-500">{{ showMeta ? "meta shown" : "meta hidden" }}</span>
               </div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use dropdown for secondary actions to reduce visual clutter.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -659,22 +585,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ TOOLTIP ═══════ -->
-        <article id="tooltip" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-orange-100">
-                <HelpCircle class="h-5 w-5 text-orange-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Tooltip</h2>
-                <p class="text-sm text-slate-500">Short helper text for icon-only or ambiguous controls.</p>
-              </div>
-            </div>
+        <article id="tooltip" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <HelpCircle class="h-4 w-4 text-orange-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Tooltip</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="flex items-center gap-4 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="flex items-center gap-4 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <button title="Save draft" class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 bg-white shadow-sm transition-colors hover:bg-slate-50" aria-label="Save draft">
                   <Check class="h-4 w-4 text-slate-600" />
                 </button>
@@ -685,21 +604,21 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Keep tooltip text short (1 line), descriptive, and action-focused.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Keep tooltip text short (1 line), descriptive, and action-focused.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Tooltip appears on hover/focus and should not block nearby controls.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Tooltip appears on hover/focus and should not block nearby controls.</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Use tooltip to clarify icon-only actions.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -711,22 +630,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ TABLE ═══════ -->
-        <article id="table" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100">
-                <Table2 class="h-5 w-5 text-rose-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Table</h2>
-                <p class="text-sm text-slate-500">Reference pattern for admin list views.</p>
-              </div>
-            </div>
+        <article id="table" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Table2 class="h-4 w-4 text-rose-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Table</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="overflow-x-auto rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="overflow-x-auto rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <table class="w-full min-w-175 text-sm">
                   <thead>
                     <tr class="border-b border-slate-200">
@@ -783,21 +695,21 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Use badges or icons in cells when status clarity is important.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Use badges or icons in cells when status clarity is important.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Provide empty, loading, and error table states in real feature pages.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Provide empty, loading, and error table states in real feature pages.</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Keep columns scannable and order by user priority.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -809,22 +721,15 @@ function nextPage(delta: number) {
         </article>
 
         <!-- ═══════ PAGINATION ═══════ -->
-        <article id="pagination" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-fuchsia-100">
-                <ChevronsLeftRight class="h-5 w-5 text-fuchsia-600" />
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Pagination</h2>
-                <p class="text-sm text-slate-500">Use for long lists with clear page controls.</p>
-              </div>
-            </div>
+        <article id="pagination" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <ChevronsLeftRight class="h-4 w-4 text-fuchsia-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Pagination</h2>
           </div>
-          <div class="space-y-6 p-6">
+          <div class="space-y-4 p-4">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Preview</p>
-              <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+              <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-slate-500">Showing {{ (page - 1) * itemsPerPage + 1 }}-{{ Math.min(page * itemsPerPage, totalItems) }} of {{ totalItems }}</span>
                   <div class="flex items-center gap-2">
@@ -845,21 +750,21 @@ function nextPage(delta: number) {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Variants</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Use with table/list views when results exceed one page.</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Use with table/list views when results exceed one page.</div>
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">States</p>
-              <div class="rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Disable previous/next controls at page boundaries (already built into component).</div>
+              <div class="rounded-lg border border-slate-200 p-5 text-sm text-slate-600">Disable previous/next controls at page boundaries (already built into component).</div>
             </div>
             <div class="grid gap-4 md:grid-cols-2">
-              <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
                 <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <div class="text-sm text-emerald-900">
                   <p class="mb-1 font-semibold">Do</p>
                   <p>Keep pagination near the list it controls and preserve filters when changing pages.</p>
                 </div>
               </div>
-              <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
                 <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                 <div class="text-sm text-amber-900">
                   <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -891,7 +796,7 @@ function nextPage(delta: number) {
             leave-from-class="scale-100 opacity-100"
             leave-to-class="scale-95 opacity-0"
           >
-            <div v-if="dialogOpen" class="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-2xl">
+            <div v-if="dialogOpen" class="w-full max-w-md rounded-lg border border-slate-200 bg-white p-4 shadow-2xl">
               <h4 class="text-lg font-semibold text-slate-900">Publish this article?</h4>
               <p class="mt-2 text-sm text-slate-500">This action will make the article visible to all visitors.</p>
               <div class="mt-5 flex justify-end gap-2">

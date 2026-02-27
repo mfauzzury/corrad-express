@@ -1,5 +1,6 @@
 import { apiRequest } from "./client";
-import type { AdminMenuItem, AdminMenuItemInput, Media, Page, PageInput, Post, PostInput, Role, RoleInput, SettingsPayload, UserDetail, UserInput } from "@/types";
+import type { Category, CategoryInput, Media, Page, PageInput, Post, PostInput, Role, RoleInput, SettingsPayload, UserDetail, UserInput } from "@/types";
+import type { AdminMenuPrefs } from "@/config/admin-menu";
 
 export async function fetchDashboardSummary() {
   return apiRequest<{ data: { counts: { posts: number; pages: number; media: number }; recent: { posts: Post[]; pages: Page[] } } }>(
@@ -25,6 +26,27 @@ export async function updatePost(id: number, input: PostInput) {
 
 export async function deletePost(id: number) {
   return apiRequest<{ data: { success: boolean } }>(`/api/posts/${id}`, { method: "DELETE" });
+}
+
+// Categories
+export async function listCategories(params = "") {
+  return apiRequest<{ data: Category[]; meta: Record<string, unknown> }>(`/api/categories${params}`);
+}
+
+export async function getCategory(id: number) {
+  return apiRequest<{ data: Category }>(`/api/categories/${id}`);
+}
+
+export async function createCategory(input: CategoryInput) {
+  return apiRequest<{ data: Category }>("/api/categories", { method: "POST", body: JSON.stringify(input) });
+}
+
+export async function updateCategory(id: number, input: CategoryInput) {
+  return apiRequest<{ data: Category }>(`/api/categories/${id}`, { method: "PUT", body: JSON.stringify(input) });
+}
+
+export async function deleteCategory(id: number) {
+  return apiRequest<{ data: { success: boolean } }>(`/api/categories/${id}`, { method: "DELETE" });
 }
 
 export async function listPages(params = "") {
@@ -72,24 +94,15 @@ export async function updateSettings(payload: SettingsPayload) {
   });
 }
 
-export async function listMenuItems() {
-  return apiRequest<{ data: AdminMenuItem[] }>("/api/admin-menu");
+export async function getAdminMenuPrefs() {
+  return apiRequest<{ data: AdminMenuPrefs | null }>("/api/settings/admin-menu-prefs");
 }
 
-export async function createMenuItem(input: AdminMenuItemInput) {
-  return apiRequest<{ data: AdminMenuItem }>("/api/admin-menu", { method: "POST", body: JSON.stringify(input) });
-}
-
-export async function updateMenuItem(id: number, input: AdminMenuItemInput) {
-  return apiRequest<{ data: AdminMenuItem }>(`/api/admin-menu/${id}`, { method: "PUT", body: JSON.stringify(input) });
-}
-
-export async function deleteMenuItem(id: number) {
-  return apiRequest<{ data: { success: boolean } }>(`/api/admin-menu/${id}`, { method: "DELETE" });
-}
-
-export async function reorderMenuItems(items: { id: number; order: number }[]) {
-  return apiRequest<{ data: { success: boolean } }>("/api/admin-menu/reorder", { method: "PUT", body: JSON.stringify({ items }) });
+export async function saveAdminMenuPrefs(prefs: AdminMenuPrefs) {
+  return apiRequest<{ data: AdminMenuPrefs }>("/api/settings/admin-menu-prefs", {
+    method: "PUT",
+    body: JSON.stringify(prefs),
+  });
 }
 
 // Users

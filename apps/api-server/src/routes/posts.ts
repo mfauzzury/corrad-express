@@ -30,7 +30,7 @@ postsRouter.get("/", async (req, res) => {
       skip: (query.page - 1) * query.limit,
       take: query.limit,
       orderBy: { [query.sortBy]: query.sortDir },
-      include: { featuredImage: true },
+      include: { featuredImage: true, categories: true },
     }),
   ]);
 
@@ -55,8 +55,9 @@ postsRouter.post("/", async (req, res) => {
       status: payload.status,
       featuredImageId: payload.featuredImageId ?? null,
       publishedAt: payload.status === "published" ? new Date() : null,
+      ...(payload.categoryIds ? { categories: { connect: payload.categoryIds.map((cid) => ({ id: cid })) } } : {}),
     },
-    include: { featuredImage: true },
+    include: { featuredImage: true, categories: true },
   });
 
   return sendOk(res, record);
@@ -64,7 +65,7 @@ postsRouter.post("/", async (req, res) => {
 
 postsRouter.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const record = await prisma.post.findUnique({ where: { id }, include: { featuredImage: true } });
+  const record = await prisma.post.findUnique({ where: { id }, include: { featuredImage: true, categories: true } });
   if (!record) return sendError(res, 404, "NOT_FOUND", "Post not found");
   return sendOk(res, record);
 });
@@ -87,8 +88,9 @@ postsRouter.put("/:id", async (req, res) => {
       status: payload.status,
       featuredImageId: payload.featuredImageId ?? null,
       publishedAt: payload.status === "published" ? existing.publishedAt ?? new Date() : null,
+      ...(payload.categoryIds !== undefined ? { categories: { set: payload.categoryIds.map((cid) => ({ id: cid })) } } : {}),
     },
-    include: { featuredImage: true },
+    include: { featuredImage: true, categories: true },
   });
 
   return sendOk(res, record);

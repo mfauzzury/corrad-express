@@ -34,3 +34,16 @@ export async function uniquePageSlug(baseTitle: string, requestedSlug?: string, 
     slug = `${base}-${counter}`;
   }
 }
+
+export async function uniqueCategorySlug(baseName: string, requestedSlug?: string, excludeId?: number) {
+  const base = toSlug(requestedSlug || baseName) || "category";
+  let slug = base;
+  let counter = 1;
+
+  while (true) {
+    const existing = await prisma.category.findFirst({ where: { slug, ...(excludeId ? { NOT: { id: excludeId } } : {}) } });
+    if (!existing) return slug;
+    counter += 1;
+    slug = `${base}-${counter}`;
+  }
+}

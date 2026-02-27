@@ -101,28 +101,15 @@ const sectionLinks = [
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Kitchen Sink: Charts</h1>
-            <p class="mt-1 text-slate-500">Bar, line, and pie chart patterns for dashboard and report screens.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600">
-              {{ sectionLinks.length }} Charts
-            </div>
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /kitchen-sink/charts
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Kitchen Sink: Charts</h1>
+        <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ sectionLinks.length }} Charts</span>
       </div>
 
       <!-- ───── Quick Jump Nav ───── -->
-      <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Quick Jump</p>
         <div class="grid gap-1.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <a
@@ -137,22 +124,15 @@ const sectionLinks = [
         </div>
       </div>
 
-      <section class="grid gap-6 md:grid-cols-2">
+      <section class="grid gap-4 md:grid-cols-2">
         <!-- ═══════ BAR CHART ═══════ -->
-        <article id="bar-chart" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-                <BarChart3 class="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Bar Chart</h2>
-                <p class="text-sm text-slate-500">Weekly posts created</p>
-              </div>
-            </div>
+        <article id="bar-chart" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <BarChart3 class="h-4 w-4 text-blue-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Bar Chart</h2>
           </div>
-          <div class="p-6">
-            <div class="flex h-64 items-end justify-between gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="flex h-64 items-end justify-between gap-3 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <div v-for="(value, index) in monthlyPosts" :key="labels[index]" class="flex flex-1 flex-col items-center gap-2">
                 <div class="text-xs font-medium text-slate-500">{{ value }}</div>
                 <div
@@ -166,20 +146,13 @@ const sectionLinks = [
         </article>
 
         <!-- ═══════ LINE CHART ═══════ -->
-        <article id="line-chart" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100">
-                <TrendingUp class="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Line Chart</h2>
-                <p class="text-sm text-slate-500">Weekly content views</p>
-              </div>
-            </div>
+        <article id="line-chart" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <TrendingUp class="h-4 w-4 text-emerald-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Line Chart</h2>
           </div>
-          <div class="p-6">
-            <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <svg viewBox="0 0 560 220" class="h-64 w-full">
                 <defs>
                   <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
@@ -214,22 +187,15 @@ const sectionLinks = [
         </article>
       </section>
 
-      <section class="grid gap-6 md:grid-cols-2">
+      <section class="grid gap-4 md:grid-cols-2">
         <!-- ═══════ STACKED BAR ═══════ -->
-        <article id="stacked-bar" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-                <Layers class="h-5 w-5 text-violet-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Stacked Bar (Traffic Mix)</h2>
-                <p class="text-sm text-slate-500">Monthly sampled traffic by source</p>
-              </div>
-            </div>
+        <article id="stacked-bar" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Layers class="h-4 w-4 text-violet-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Stacked Bar (Traffic Mix)</h2>
           </div>
-          <div class="p-6">
-            <div class="space-y-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="space-y-3 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <div v-for="item in monthlyTraffic" :key="item.month" class="space-y-1.5">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-medium text-slate-700">{{ item.month }}</span>
@@ -260,20 +226,13 @@ const sectionLinks = [
         </article>
 
         <!-- ═══════ FUNNEL ═══════ -->
-        <article id="funnel" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-                <Filter class="h-5 w-5 text-amber-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Funnel Chart</h2>
-                <p class="text-sm text-slate-500">Sample conversion stages</p>
-              </div>
-            </div>
+        <article id="funnel" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Filter class="h-4 w-4 text-amber-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Funnel Chart</h2>
           </div>
-          <div class="p-6">
-            <div class="space-y-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="space-y-3 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <div v-for="step in funnel" :key="step.stage" class="space-y-1.5">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-medium text-slate-700">{{ step.stage }}</span>
@@ -293,22 +252,15 @@ const sectionLinks = [
         </article>
       </section>
 
-      <section class="grid gap-6 md:grid-cols-2">
+      <section class="grid gap-4 md:grid-cols-2">
         <!-- ═══════ PIE CHART ═══════ -->
-        <article id="pie-chart" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-pink-100">
-                <PieChart class="h-5 w-5 text-pink-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Pie Chart Breakdown</h2>
-                <p class="text-sm text-slate-500">Source share using sampled percentages</p>
-              </div>
-            </div>
+        <article id="pie-chart" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <PieChart class="h-4 w-4 text-pink-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Pie Chart Breakdown</h2>
           </div>
-          <div class="p-6">
-            <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <div class="flex items-center gap-8">
                 <div class="h-40 w-40 shrink-0 rounded-full shadow-inner" :style="{ background: pieGradient }" />
                 <div class="flex-1 space-y-2.5">
@@ -330,20 +282,13 @@ const sectionLinks = [
         </article>
 
         <!-- ═══════ DATA TABLE ═══════ -->
-        <article id="data-table" class="scroll-mt-24 rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100">
-                <Table2 class="h-5 w-5 text-rose-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Sample Dataset Table</h2>
-                <p class="text-sm text-slate-500">Raw values backing the charts</p>
-              </div>
-            </div>
+        <article id="data-table" class="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Table2 class="h-4 w-4 text-rose-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Sample Dataset Table</h2>
           </div>
-          <div class="p-6">
-            <div class="overflow-x-auto rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-5">
+          <div class="p-4">
+            <div class="overflow-x-auto rounded-lg border border-dashed border-slate-300 bg-slate-50/50 p-5">
               <table class="w-full text-sm">
                 <thead>
                   <tr class="border-b border-slate-200">
@@ -369,29 +314,22 @@ const sectionLinks = [
         </article>
       </section>
 
-      <section class="grid gap-6 md:grid-cols-2">
+      <section class="grid gap-4 md:grid-cols-2">
         <!-- ═══════ USAGE NOTES ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-100">
-                <BookOpen class="h-5 w-5 text-teal-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Usage Notes</h2>
-                <p class="text-sm text-slate-500">Guidelines for chart implementation.</p>
-              </div>
-            </div>
+        <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <BookOpen class="h-4 w-4 text-teal-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Usage Notes</h2>
           </div>
-          <div class="space-y-4 p-6">
-            <div class="flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+          <div class="space-y-4 p-4">
+            <div class="flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
               <CheckCircle2 class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
               <div class="text-sm text-emerald-900">
                 <p class="mb-1 font-semibold">Do</p>
                 <p>Use consistent scales and short time labels for quick scanning.</p>
               </div>
             </div>
-            <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+            <div class="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/50 p-4">
               <XCircle class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
               <div class="text-sm text-amber-900">
                 <p class="mb-1 font-semibold">Don&apos;t</p>
@@ -402,20 +340,13 @@ const sectionLinks = [
         </article>
 
         <!-- ═══════ SAMPLING NOTES ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100">
-                <Database class="h-5 w-5 text-indigo-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Sampling Notes</h2>
-                <p class="text-sm text-slate-500">Context about the demo datasets.</p>
-              </div>
-            </div>
+        <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+            <Database class="h-4 w-4 text-indigo-600" />
+            <h2 class="text-sm font-semibold text-slate-900">Sampling Notes</h2>
           </div>
-          <div class="p-6">
-            <div class="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/50 p-5 text-sm text-slate-600">
+          <div class="p-4">
+            <div class="space-y-2.5 rounded-lg border border-slate-200 bg-slate-50/50 p-5 text-sm text-slate-600">
               <div class="flex items-start gap-2">
                 <span class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
                 <p>Dataset window: 7-day and 6-month samples.</p>

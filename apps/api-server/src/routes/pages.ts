@@ -27,6 +27,7 @@ pagesRouter.get("/", async (req, res) => {
     prisma.page.count({ where }),
     prisma.page.findMany({
       where,
+      include: { featuredImage: true },
       skip: (query.page - 1) * query.limit,
       take: query.limit,
       orderBy: { [query.sortBy]: query.sortDir },
@@ -51,8 +52,10 @@ pagesRouter.post("/", async (req, res) => {
       slug,
       content: payload.content,
       status: payload.status,
+      featuredImageId: payload.featuredImageId ?? null,
       publishedAt: payload.status === "published" ? new Date() : null,
     },
+    include: { featuredImage: true },
   });
 
   return sendOk(res, record);
@@ -60,7 +63,7 @@ pagesRouter.post("/", async (req, res) => {
 
 pagesRouter.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
-  const record = await prisma.page.findUnique({ where: { id } });
+  const record = await prisma.page.findUnique({ where: { id }, include: { featuredImage: true } });
   if (!record) return sendError(res, 404, "NOT_FOUND", "Page not found");
   return sendOk(res, record);
 });
@@ -80,8 +83,10 @@ pagesRouter.put("/:id", async (req, res) => {
       slug,
       content: payload.content,
       status: payload.status,
+      featuredImageId: payload.featuredImageId ?? null,
       publishedAt: payload.status === "published" ? existing.publishedAt ?? new Date() : null,
     },
+    include: { featuredImage: true },
   });
 
   return sendOk(res, record);

@@ -57,39 +57,21 @@ onMounted(load);
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Media Library</h1>
-            <p class="mt-1 text-slate-500">Upload, browse, and manage your media assets.</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /media
-            </div>
-          </div>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Media Library</h1>
       </div>
 
       <!-- ───── Upload Area ───── -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-              <Upload class="h-5 w-5 text-violet-600" />
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold">Upload</h2>
-              <p class="text-sm text-slate-500">Add new files to your media library.</p>
-            </div>
-          </div>
+      <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+          <Upload class="h-4 w-4 text-violet-600" />
+          <h2 class="text-sm font-semibold text-slate-900">Upload</h2>
         </div>
-        <div class="p-6">
-          <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-10 transition-colors hover:border-violet-400 hover:bg-violet-50/30">
-            <Upload class="mb-3 h-8 w-8 text-slate-400" />
+        <div class="p-4">
+          <label class="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-5 transition-colors hover:border-violet-400 hover:bg-violet-50/30">
+            <Upload class="mb-2 h-6 w-6 text-slate-400" />
             <p class="text-sm font-medium text-slate-700">Click to upload a file</p>
             <p class="mt-1 text-xs text-slate-400">PNG, JPG, GIF, SVG, PDF up to 10MB</p>
             <input type="file" class="hidden" @change="onFileChange" />
@@ -103,24 +85,17 @@ onMounted(load);
       </article>
 
       <!-- ───── Media Grid ───── -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100">
-              <FolderOpen class="h-5 w-5 text-amber-600" />
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold">Library</h2>
-              <p class="text-sm text-slate-500">{{ rows.length }} file{{ rows.length !== 1 ? 's' : '' }} in your library.</p>
-            </div>
-          </div>
+      <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+          <FolderOpen class="h-4 w-4 text-amber-600" />
+          <h2 class="text-sm font-semibold text-slate-900">Library</h2>
         </div>
-        <div class="p-6">
-          <div v-if="rows.length > 0" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="p-4">
+          <div v-if="rows.length > 0" class="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
             <div
               v-for="item in rows"
               :key="item.id"
-              class="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
+              class="group overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md"
             >
               <div class="relative aspect-video bg-slate-100">
                 <img
@@ -136,13 +111,13 @@ onMounted(load);
                   <Trash2 class="h-3.5 w-3.5" />
                 </button>
               </div>
-              <div class="px-3 py-2.5">
+              <div class="px-2.5 py-2">
                 <p class="truncate text-sm font-medium text-slate-900">{{ item.originalName }}</p>
                 <p class="text-xs text-slate-400">{{ item.mimeType }}</p>
               </div>
             </div>
           </div>
-          <div v-else class="flex flex-col items-center justify-center py-12 text-center">
+          <div v-else class="flex flex-col items-center justify-center py-8 text-center">
             <Image class="mb-3 h-10 w-10 text-slate-300" />
             <p class="text-sm font-medium text-slate-500">No media files yet</p>
             <p class="mt-1 text-xs text-slate-400">Upload your first file to get started.</p>

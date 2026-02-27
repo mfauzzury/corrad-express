@@ -78,40 +78,27 @@ onMounted(load);
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Users</h1>
-            <p class="mt-1 text-slate-500">Manage admin users and their access.</p>
-          </div>
-          <button
-            class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
-            @click="startNew"
-          >
-            <Plus class="h-4 w-4" />
-            Add User
-          </button>
-        </div>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Users</h1>
+        <button
+          class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
+          @click="startNew"
+        >
+          <Plus class="h-4 w-4" />
+          Add User
+        </button>
       </div>
 
       <!-- ───── Form Card ───── -->
-      <article v-if="showForm" class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-              <Pencil class="h-5 w-5 text-violet-600" />
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold">{{ editingId ? 'Edit User' : 'New User' }}</h2>
-              <p class="text-sm text-slate-500">{{ editingId ? 'Update user details.' : 'Create a new admin user.' }}</p>
-            </div>
-          </div>
+      <article v-if="showForm" class="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+          <Pencil class="h-4 w-4 text-violet-600" />
+          <h2 class="text-sm font-semibold text-slate-900">{{ editingId ? 'Edit User' : 'New User' }}</h2>
         </div>
-        <div class="space-y-4 p-6">
-          <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-3 p-4">
+          <div class="grid gap-3 md:grid-cols-2">
             <div class="space-y-1.5">
               <label class="text-sm font-medium text-slate-700">Name</label>
               <input v-model="form.name" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200" placeholder="Full name" />
@@ -140,7 +127,7 @@ onMounted(load);
             </label>
             <span class="text-sm text-slate-700">Active</span>
           </div>
-          <div class="flex items-center gap-3 border-t border-slate-100 pt-4">
+          <div class="flex items-center gap-3 border-t border-slate-100 pt-3">
             <button
               class="flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800 disabled:opacity-50"
               :disabled="saving || !form.name || !form.email"
@@ -158,37 +145,30 @@ onMounted(load);
       </article>
 
       <!-- ───── Users Table ───── -->
-      <article class="rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-4">
-          <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100">
-              <Users class="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 class="text-lg font-semibold">All Users</h2>
-              <p class="text-sm text-slate-500">{{ users.length }} user{{ users.length !== 1 ? 's' : '' }} registered.</p>
-            </div>
-          </div>
+      <article class="rounded-lg border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+          <Users class="h-4 w-4 text-blue-600" />
+          <h2 class="text-sm font-semibold text-slate-900">All Users</h2>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-slate-100 text-left">
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Email</th>
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
-                <th class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Email</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
+                <th class="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                <th class="px-4 py-2 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               <tr v-for="user in users" :key="user.id" class="transition-colors hover:bg-slate-50">
-                <td class="px-6 py-3 font-medium text-slate-900">{{ user.name }}</td>
-                <td class="px-6 py-3 text-slate-500">{{ user.email }}</td>
-                <td class="px-6 py-3">
+                <td class="px-4 py-2 font-medium text-slate-900">{{ user.name }}</td>
+                <td class="px-4 py-2 text-slate-500">{{ user.email }}</td>
+                <td class="px-4 py-2">
                   <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">{{ user.role }}</span>
                 </td>
-                <td class="px-6 py-3">
+                <td class="px-4 py-2">
                   <span v-if="user.isActive" class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
                     <CheckCircle2 class="h-3 w-3" /> Active
                   </span>
@@ -196,7 +176,7 @@ onMounted(load);
                     <XCircle class="h-3 w-3" /> Inactive
                   </span>
                 </td>
-                <td class="px-6 py-3 text-right">
+                <td class="px-4 py-2 text-right">
                   <div class="flex items-center justify-end gap-1.5">
                     <button class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700" title="Edit" @click="startEdit(user)">
                       <Pencil class="h-3.5 w-3.5" />
@@ -208,7 +188,7 @@ onMounted(load);
                 </td>
               </tr>
               <tr v-if="users.length === 0">
-                <td colspan="5" class="px-6 py-8 text-center text-sm text-slate-400">No users found.</td>
+                <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-400">No users found.</td>
               </tr>
             </tbody>
           </table>

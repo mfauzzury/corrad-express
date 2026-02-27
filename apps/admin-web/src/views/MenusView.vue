@@ -1,454 +1,268 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   Menu,
-  Plus,
   ChevronUp,
   ChevronDown,
-  Eye,
-  EyeOff,
-  Pencil,
-  Trash2,
   Save,
-  X,
-  GripVertical,
-  Gauge,
-  FileText,
-  Image,
-  LayoutGrid,
-  Settings,
-  Users,
-  Globe,
-  Folder,
-  Tag,
-  MessageSquare,
-  Bell,
-  Calendar,
-  BarChart3,
-  Shield,
-  PenLine,
-  Home,
-  Link,
-  Star,
-  Heart,
-  Bookmark,
-  Search,
+  RotateCcw,
+  Check,
 } from "lucide-vue-next";
 
 import AdminLayout from "@/layouts/AdminLayout.vue";
-import {
-  listMenuItems,
-  createMenuItem,
-  updateMenuItem,
-  deleteMenuItem,
-  reorderMenuItems,
-} from "@/api/cms";
-import type { AdminMenuItem, AdminMenuItemInput } from "@/types";
+import { DEFAULT_MENU, type AdminMenuPrefs } from "@/config/admin-menu";
+import { useMenuStore } from "@/stores/menu";
 
-const items = ref<AdminMenuItem[]>([]);
-const selectedId = ref<number | null>(null);
-const isNew = ref(false);
+const menuStore = useMenuStore();
 const saving = ref(false);
+const saved = ref(false);
+const error = ref("");
 
-const form = ref<AdminMenuItemInput>({
-  label: "",
-  url: "",
-  icon: "FileText",
-  parentId: null,
-  order: 0,
-  isVisible: true,
+const localPrefs = ref<AdminMenuPrefs>({
+  groupOrder: DEFAULT_MENU.map((g) => g.id),
+  itemOrder: Object.fromEntries(DEFAULT_MENU.map((g) => [g.id, g.items.map((i) => i.id)])),
+  hidden: [],
+  hiddenGroups: [],
 });
 
-const iconOptions = [
-  { name: "Gauge", component: Gauge },
-  { name: "FileText", component: FileText },
-  { name: "Image", component: Image },
-  { name: "LayoutGrid", component: LayoutGrid },
-  { name: "Settings", component: Settings },
-  { name: "Menu", component: Menu },
-  { name: "Users", component: Users },
-  { name: "Globe", component: Globe },
-  { name: "Folder", component: Folder },
-  { name: "Tag", component: Tag },
-  { name: "MessageSquare", component: MessageSquare },
-  { name: "Bell", component: Bell },
-  { name: "Calendar", component: Calendar },
-  { name: "BarChart3", component: BarChart3 },
-  { name: "Shield", component: Shield },
-  { name: "PenLine", component: PenLine },
-  { name: "Home", component: Home },
-  { name: "Link", component: Link },
-  { name: "Star", component: Star },
-  { name: "Heart", component: Heart },
-  { name: "Bookmark", component: Bookmark },
-  { name: "Search", component: Search },
-];
-
-const iconMap = computed(() => {
-  const map: Record<string, unknown> = {};
-  for (const opt of iconOptions) {
-    map[opt.name] = opt.component;
+function mergeWithDefaults(prefs: AdminMenuPrefs): AdminMenuPrefs {
+  const allGroupIds = DEFAULT_MENU.map((g) => g.id);
+  const groupOrder = [...prefs.groupOrder];
+  for (const gid of allGroupIds) {
+    if (!groupOrder.includes(gid)) groupOrder.push(gid);
   }
-  return map;
-});
 
-const topLevelItems = computed(() =>
-  items.value.filter((i) => i.parentId === null).sort((a, b) => a.order - b.order),
-);
-
-const childrenOf = computed(() => {
-  const map: Record<number, AdminMenuItem[]> = {};
-  for (const item of items.value) {
-    if (item.parentId !== null) {
-      if (!map[item.parentId]) map[item.parentId] = [];
-      map[item.parentId].push(item);
+  const itemOrder: Record<string, string[]> = {};
+  for (const group of DEFAULT_MENU) {
+    const allItemIds = group.items.map((i) => i.id);
+    const savedOrder = prefs.itemOrder[group.id] || [];
+    const merged = [...savedOrder];
+    for (const iid of allItemIds) {
+      if (!merged.includes(iid)) merged.push(iid);
     }
+    itemOrder[group.id] = merged.filter((iid) => allItemIds.includes(iid));
   }
-  for (const key of Object.keys(map)) {
-    map[Number(key)].sort((a, b) => a.order - b.order);
+
+  return {
+    groupOrder: groupOrder.filter((gid) => allGroupIds.includes(gid)),
+    itemOrder,
+    hidden: prefs.hidden.filter((id) =>
+      DEFAULT_MENU.some((g) => g.items.some((i) => i.id === id)),
+    ),
+    hiddenGroups: (prefs.hiddenGroups || []).filter((gid) => allGroupIds.includes(gid)),
+  };
+}
+
+onMounted(async () => {
+  await menuStore.load();
+  if (menuStore.prefs) {
+    localPrefs.value = mergeWithDefaults(menuStore.prefs);
   }
-  return map;
 });
 
-const parentOptions = computed(() =>
-  items.value
-    .filter((i) => i.parentId === null && i.id !== selectedId.value)
-    .sort((a, b) => a.order - b.order),
-);
-
-async function load() {
-  const response = await listMenuItems();
-  items.value = response.data;
+function getGroupLabel(groupId: string): string {
+  return DEFAULT_MENU.find((g) => g.id === groupId)?.label ?? groupId;
 }
 
-function selectItem(item: AdminMenuItem) {
-  selectedId.value = item.id;
-  isNew.value = false;
-  form.value = {
-    label: item.label,
-    url: item.url,
-    icon: item.icon,
-    parentId: item.parentId,
-    order: item.order,
-    isVisible: item.isVisible,
-  };
+function getItemDef(groupId: string, itemId: string) {
+  const group = DEFAULT_MENU.find((g) => g.id === groupId);
+  return group?.items.find((i) => i.id === itemId);
 }
 
-function startNew() {
-  selectedId.value = null;
-  isNew.value = true;
-  const maxOrder = items.value.reduce((max, i) => Math.max(max, i.order), 0);
-  form.value = {
-    label: "",
-    url: "",
-    icon: "FileText",
-    parentId: null,
-    order: maxOrder + 1,
-    isVisible: true,
-  };
+function isHidden(itemId: string): boolean {
+  return localPrefs.value.hidden.includes(itemId);
 }
 
-function cancelEdit() {
-  selectedId.value = null;
-  isNew.value = false;
+function toggleVisibility(itemId: string) {
+  const idx = localPrefs.value.hidden.indexOf(itemId);
+  if (idx >= 0) {
+    localPrefs.value.hidden.splice(idx, 1);
+  } else {
+    localPrefs.value.hidden.push(itemId);
+  }
+}
+
+function moveGroup(groupId: string, direction: "up" | "down") {
+  const arr = localPrefs.value.groupOrder;
+  const idx = arr.indexOf(groupId);
+  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= arr.length) return;
+  [arr[idx], arr[swapIdx]] = [arr[swapIdx], arr[idx]];
+}
+
+function moveItem(groupId: string, itemId: string, direction: "up" | "down") {
+  const arr = localPrefs.value.itemOrder[groupId];
+  if (!arr) return;
+  const idx = arr.indexOf(itemId);
+  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= arr.length) return;
+  [arr[idx], arr[swapIdx]] = [arr[swapIdx], arr[idx]];
 }
 
 async function save() {
   saving.value = true;
+  saved.value = false;
+  error.value = "";
   try {
-    if (isNew.value) {
-      await createMenuItem(form.value);
-    } else if (selectedId.value !== null) {
-      await updateMenuItem(selectedId.value, form.value);
-    }
-    await load();
-    selectedId.value = null;
-    isNew.value = false;
+    await menuStore.save(localPrefs.value);
+    saved.value = true;
+    setTimeout(() => { saved.value = false; }, 2000);
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : "Failed to save";
   } finally {
     saving.value = false;
   }
 }
 
-async function remove() {
-  if (selectedId.value === null) return;
-  await deleteMenuItem(selectedId.value);
-  await load();
-  selectedId.value = null;
-  isNew.value = false;
+function isGroupHidden(groupId: string): boolean {
+  return localPrefs.value.hiddenGroups.includes(groupId);
 }
 
-async function moveItem(item: AdminMenuItem, direction: "up" | "down") {
-  const siblings = item.parentId === null
-    ? topLevelItems.value
-    : (childrenOf.value[item.parentId] || []);
-  const idx = siblings.findIndex((s) => s.id === item.id);
-  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-  if (swapIdx < 0 || swapIdx >= siblings.length) return;
-
-  const updates = [
-    { id: item.id, order: siblings[swapIdx].order },
-    { id: siblings[swapIdx].id, order: item.order },
-  ];
-  await reorderMenuItems(updates);
-  await load();
+function toggleGroupVisibility(groupId: string) {
+  const idx = localPrefs.value.hiddenGroups.indexOf(groupId);
+  if (idx >= 0) {
+    localPrefs.value.hiddenGroups.splice(idx, 1);
+  } else {
+    localPrefs.value.hiddenGroups.push(groupId);
+  }
 }
 
-async function toggleVisibility(item: AdminMenuItem) {
-  await updateMenuItem(item.id, {
-    label: item.label,
-    url: item.url,
-    icon: item.icon,
-    parentId: item.parentId,
-    order: item.order,
-    isVisible: !item.isVisible,
-  });
-  await load();
+function resetToDefaults() {
+  localPrefs.value = {
+    groupOrder: DEFAULT_MENU.map((g) => g.id),
+    itemOrder: Object.fromEntries(DEFAULT_MENU.map((g) => [g.id, g.items.map((i) => i.id)])),
+    hidden: [],
+    hiddenGroups: [],
+  };
 }
-
-onMounted(load);
 </script>
 
 <template>
   <AdminLayout>
-    <div class="mx-auto max-w-7xl space-y-6">
+    <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
-      <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-white px-6 py-5">
-        <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #0f172a 1px, transparent 0); background-size: 24px 24px;" />
-        <div class="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent">Menus</h1>
-            <p class="mt-1 text-slate-500">Manage your admin sidebar navigation items.</p>
+      <div class="flex items-center justify-between">
+        <h1 class="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-[1.45rem] font-bold tracking-tight text-transparent">Menu Configuration</h1>
+        <div class="flex items-center gap-2">
+          <button
+            class="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+            @click="resetToDefaults"
+          >
+            <RotateCcw class="h-4 w-4" />
+            Reset
+          </button>
+          <button
+            class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800 disabled:opacity-50"
+            :disabled="saving"
+            @click="save"
+          >
+            <Check v-if="saved" class="h-4 w-4" />
+            <Save v-else class="h-4 w-4" />
+            {{ saved ? 'Saved!' : saving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </div>
+      <p v-if="error" class="text-sm text-rose-600">{{ error }}</p>
+
+      <!-- ───── Groups ───── -->
+      <div class="space-y-4">
+        <div
+          v-for="(groupId, gi) in localPrefs.groupOrder"
+          :key="groupId"
+          class="rounded-lg border border-slate-200 bg-white shadow-sm transition-opacity"
+          :class="{ 'opacity-50': isGroupHidden(groupId) }"
+        >
+          <!-- Group header -->
+          <div class="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
+            <div class="flex items-center gap-2">
+              <Menu class="h-4 w-4 text-violet-600" />
+              <h2 class="text-sm font-semibold text-slate-900">{{ getGroupLabel(groupId) }}</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="group relative">
+                <button
+                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors"
+                  :class="isGroupHidden(groupId) ? 'bg-slate-400' : 'bg-violet-600'"
+                  @click="toggleGroupVisibility(groupId)"
+                >
+                  <span
+                    class="inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform"
+                    :class="isGroupHidden(groupId) ? 'translate-x-[2px]' : 'translate-x-[18px]'"
+                  />
+                </button>
+                <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">{{ isGroupHidden(groupId) ? 'Show group' : 'Hide group' }}</span>
+              </div>
+              <button
+                class="group relative flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                :disabled="gi === 0"
+                @click="moveGroup(groupId, 'up')"
+              >
+                <ChevronUp class="h-4 w-4" />
+                <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Move up</span>
+              </button>
+              <button
+                class="group relative flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                :disabled="gi === localPrefs.groupOrder.length - 1"
+                @click="moveGroup(groupId, 'down')"
+              >
+                <ChevronDown class="h-4 w-4" />
+                <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Move down</span>
+              </button>
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-mono text-slate-500">
-              /menus
+
+          <!-- Items in group -->
+          <div class="divide-y divide-slate-50">
+            <div
+              v-for="(itemId, ii) in (localPrefs.itemOrder[groupId] || [])"
+              :key="itemId"
+              class="flex items-center gap-3 px-4 py-2 transition-colors hover:bg-slate-50"
+              :class="{ 'opacity-40': isHidden(itemId) }"
+            >
+              <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-100">
+                <component :is="getItemDef(groupId, itemId)?.icon" class="h-3.5 w-3.5 text-slate-500" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-medium text-slate-900">{{ getItemDef(groupId, itemId)?.label }}</p>
+                <p class="truncate text-xs text-slate-400">{{ getItemDef(groupId, itemId)?.to }}</p>
+              </div>
+              <div v-if="getItemDef(groupId, itemId)?.children" class="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                {{ getItemDef(groupId, itemId)!.children!.length }} sub
+              </div>
+              <div class="flex shrink-0 items-center gap-2">
+                <div class="group relative">
+                  <button
+                    class="relative inline-flex h-4 w-7 shrink-0 cursor-pointer items-center rounded-full transition-colors"
+                    :class="isHidden(itemId) ? 'bg-slate-400' : 'bg-violet-600'"
+                    @click="toggleVisibility(itemId)"
+                  >
+                    <span
+                      class="inline-block h-3 w-3 rounded-full bg-white shadow-sm transition-transform"
+                      :class="isHidden(itemId) ? 'translate-x-[2px]' : 'translate-x-[14px]'"
+                    />
+                  </button>
+                  <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">{{ isHidden(itemId) ? 'Show' : 'Hide' }}</span>
+                </div>
+                <button
+                  class="group relative flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                  :disabled="ii === 0"
+                  @click="moveItem(groupId, itemId, 'up')"
+                >
+                  <ChevronUp class="h-3.5 w-3.5" />
+                  <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Move up</span>
+                </button>
+                <button
+                  class="group relative flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:opacity-30"
+                  :disabled="ii === (localPrefs.itemOrder[groupId] || []).length - 1"
+                  @click="moveItem(groupId, itemId, 'down')"
+                >
+                  <ChevronDown class="h-3.5 w-3.5" />
+                  <span class="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">Move down</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- ───── Content Grid ───── -->
-      <div class="grid gap-6 lg:grid-cols-5">
-        <!-- ═══════ LEFT: Menu Items List ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm lg:col-span-3">
-          <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-100">
-                <Menu class="h-5 w-5 text-teal-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Menu Items</h2>
-                <p class="text-sm text-slate-500">{{ items.length }} item{{ items.length !== 1 ? 's' : '' }} configured.</p>
-              </div>
-            </div>
-            <button
-              class="flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800"
-              @click="startNew"
-            >
-              <Plus class="h-4 w-4" />
-              Add Item
-            </button>
-          </div>
-
-          <div class="divide-y divide-slate-100">
-            <template v-for="parent in topLevelItems" :key="parent.id">
-              <!-- Parent item -->
-              <div
-                class="flex items-center gap-3 px-6 py-3 transition-colors hover:bg-slate-50"
-                :class="{ 'bg-violet-50/50 ring-1 ring-inset ring-violet-200': selectedId === parent.id }"
-              >
-                <GripVertical class="h-4 w-4 shrink-0 text-slate-300" />
-                <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-100">
-                  <component :is="iconMap[parent.icon] || FileText" class="h-3.5 w-3.5 text-slate-500" />
-                </div>
-                <button class="min-w-0 flex-1 text-left" @click="selectItem(parent)">
-                  <p class="truncate text-sm font-medium text-slate-900">{{ parent.label }}</p>
-                  <p class="truncate text-xs text-slate-400">{{ parent.url }}</p>
-                </button>
-                <span
-                  v-if="!parent.isVisible"
-                  class="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400"
-                >Hidden</span>
-                <div class="flex shrink-0 items-center gap-0.5">
-                  <button
-                    class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                    title="Toggle visibility"
-                    @click="toggleVisibility(parent)"
-                  >
-                    <Eye v-if="parent.isVisible" class="h-3.5 w-3.5" />
-                    <EyeOff v-else class="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                    title="Move up"
-                    @click="moveItem(parent, 'up')"
-                  >
-                    <ChevronUp class="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                    title="Move down"
-                    @click="moveItem(parent, 'down')"
-                  >
-                    <ChevronDown class="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Children -->
-              <template v-if="childrenOf[parent.id]">
-                <div
-                  v-for="child in childrenOf[parent.id]"
-                  :key="child.id"
-                  class="flex items-center gap-3 py-2.5 pl-16 pr-6 transition-colors hover:bg-slate-50"
-                  :class="{ 'bg-violet-50/50 ring-1 ring-inset ring-violet-200': selectedId === child.id }"
-                >
-                  <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-slate-100">
-                    <component :is="iconMap[child.icon] || FileText" class="h-3 w-3 text-slate-400" />
-                  </div>
-                  <button class="min-w-0 flex-1 text-left" @click="selectItem(child)">
-                    <p class="truncate text-sm text-slate-700">{{ child.label }}</p>
-                    <p class="truncate text-xs text-slate-400">{{ child.url }}</p>
-                  </button>
-                  <span
-                    v-if="!child.isVisible"
-                    class="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400"
-                  >Hidden</span>
-                  <div class="flex shrink-0 items-center gap-0.5">
-                    <button
-                      class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                      title="Toggle visibility"
-                      @click="toggleVisibility(child)"
-                    >
-                      <Eye v-if="child.isVisible" class="h-3.5 w-3.5" />
-                      <EyeOff v-else class="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                      title="Move up"
-                      @click="moveItem(child, 'up')"
-                    >
-                      <ChevronUp class="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      class="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                      title="Move down"
-                      @click="moveItem(child, 'down')"
-                    >
-                      <ChevronDown class="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </template>
-            </template>
-
-            <!-- Empty state -->
-            <div v-if="items.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
-              <Menu class="mb-3 h-10 w-10 text-slate-300" />
-              <p class="text-sm font-medium text-slate-500">No menu items yet</p>
-              <p class="mt-1 text-xs text-slate-400">Click "Add Item" to create your first menu entry.</p>
-            </div>
-          </div>
-        </article>
-
-        <!-- ═══════ RIGHT: Editor Form ═══════ -->
-        <article class="rounded-xl border border-slate-200 bg-white shadow-sm lg:col-span-2">
-          <div class="border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100">
-                <Pencil class="h-5 w-5 text-violet-600" />
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">{{ isNew ? 'New Item' : selectedId ? 'Edit Item' : 'Item Editor' }}</h2>
-                <p class="text-sm text-slate-500">{{ isNew || selectedId ? 'Configure menu item properties.' : 'Select an item or add a new one.' }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="isNew || selectedId" class="space-y-4 p-6">
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Label</label>
-              <input
-                v-model="form.label"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
-                placeholder="Menu item label"
-              />
-            </div>
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">URL</label>
-              <input
-                v-model="form.url"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
-                placeholder="/path"
-              />
-            </div>
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Icon</label>
-              <div class="grid grid-cols-8 gap-1.5 rounded-lg border border-slate-300 p-2">
-                <button
-                  v-for="opt in iconOptions"
-                  :key="opt.name"
-                  class="flex h-8 w-8 items-center justify-center rounded-md transition-colors"
-                  :class="form.icon === opt.name ? 'bg-violet-100 text-violet-600 ring-1 ring-violet-300' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'"
-                  :title="opt.name"
-                  @click="form.icon = opt.name"
-                >
-                  <component :is="opt.component" class="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-            <div class="space-y-1.5">
-              <label class="text-sm font-medium text-slate-700">Parent</label>
-              <select
-                v-model="form.parentId"
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm transition-colors focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
-              >
-                <option :value="null">None (Top Level)</option>
-                <option v-for="p in parentOptions" :key="p.id" :value="p.id">{{ p.label }}</option>
-              </select>
-            </div>
-            <div class="flex items-center gap-3">
-              <label class="relative inline-flex cursor-pointer items-center">
-                <input v-model="form.isVisible" type="checkbox" class="peer sr-only" />
-                <div class="h-5 w-9 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-sm after:transition-all peer-checked:bg-violet-600 peer-checked:after:translate-x-full" />
-              </label>
-              <span class="text-sm text-slate-700">Visible</span>
-            </div>
-
-            <div class="flex items-center gap-3 border-t border-slate-100 pt-4">
-              <button
-                class="flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-800 disabled:opacity-50"
-                :disabled="saving || !form.label || !form.url"
-                @click="save"
-              >
-                <Save class="h-4 w-4" />
-                {{ isNew ? 'Create' : 'Update' }}
-              </button>
-              <button
-                v-if="!isNew && selectedId"
-                class="flex items-center gap-2 rounded-lg border border-rose-200 px-4 py-2 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50"
-                @click="remove"
-              >
-                <Trash2 class="h-4 w-4" />
-                Delete
-              </button>
-              <button
-                class="flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
-                @click="cancelEdit"
-              >
-                <X class="h-4 w-4" />
-                Cancel
-              </button>
-            </div>
-          </div>
-
-          <!-- No selection state -->
-          <div v-else class="flex flex-col items-center justify-center px-6 py-16 text-center">
-            <Pencil class="mb-3 h-10 w-10 text-slate-300" />
-            <p class="text-sm font-medium text-slate-500">No item selected</p>
-            <p class="mt-1 text-xs text-slate-400">Click an item from the list or add a new one.</p>
-          </div>
-        </article>
       </div>
     </div>
   </AdminLayout>

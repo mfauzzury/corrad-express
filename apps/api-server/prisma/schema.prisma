@@ -18,6 +18,7 @@ model User {
   email        String    @unique
   passwordHash String
   name         String
+  photoUrl     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   sessions     Session[]
@@ -47,20 +48,35 @@ model Post {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   featuredImage   Media?        @relation(fields: [featuredImageId], references: [id], onDelete: SetNull)
+  categories      Category[]
 
   @@index([status])
   @@index([createdAt])
 }
 
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+
+  @@index([createdAt])
+}
+
 model Page {
-  id          Int           @id @default(autoincrement())
-  title       String
-  slug        String        @unique
-  content     String
-  status      PublishStatus @default(draft)
-  publishedAt DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id              Int           @id @default(autoincrement())
+  title           String
+  slug            String        @unique
+  content         String
+  status          PublishStatus @default(draft)
+  featuredImageId Int?
+  publishedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  featuredImage   Media?        @relation(fields: [featuredImageId], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([createdAt])
@@ -79,6 +95,7 @@ model Media {
   url          String
   createdAt    DateTime @default(now())
   posts        Post[]
+  pages        Page[]
 
   @@index([createdAt])
 }
