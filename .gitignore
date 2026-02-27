@@ -1,0 +1,15 @@
+node_modules
+apps/*/node_modules
+.next
+.DS_Store
+npm-debug.log*
+
+apps/api-server/.env
+apps/admin-web/.env
+apps/api-server/prisma/dev.db
+apps/api-server/prisma/dev.db-journal
+apps/api-server/uploads/*
+!apps/api-server/uploads/.gitkeep
+
+apps/*/dist
+*.tsbuildinfo

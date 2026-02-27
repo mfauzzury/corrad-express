@@ -1,0 +1,36 @@
+import { defineStore } from "pinia";
+import { getSettings } from "@/api/cms";
+import type { SettingsPayload } from "@/types";
+
+export const useSiteStore = defineStore("site", {
+  state: () => ({
+    siteTitle: "CORRAD+",
+    titleFormat: "%page% | %site%",
+    siteIconUrl: "",
+    initialized: false,
+  }),
+  actions: {
+    async load() {
+      try {
+        const res = await getSettings();
+        const d = res.data;
+        this.siteTitle = d.siteTitle || "CORRAD+";
+        this.titleFormat = d.titleFormat || "%page% | %site%";
+        this.siteIconUrl = d.siteIconUrl || "";
+        this.initialized = true;
+      } catch {
+        // use defaults
+      }
+    },
+    applyFrom(payload: SettingsPayload) {
+      this.siteTitle = payload.siteTitle || "CORRAD+";
+      this.titleFormat = payload.titleFormat || "%page% | %site%";
+      this.siteIconUrl = payload.siteIconUrl || "";
+    },
+    setDocumentTitle(pageTitle: string) {
+      document.title = this.titleFormat
+        .replace("%page%", pageTitle)
+        .replace("%site%", this.siteTitle);
+    },
+  },
+});
