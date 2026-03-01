@@ -5,16 +5,22 @@ import multer from "multer";
 
 import { env } from "../config/env.js";
 import { prisma } from "../prisma.js";
+import { mediaMetadataInputSchema } from "./schemas.js";
 import { sendError, sendOk } from "../utils/responses.js";
 
 const allowedMimeTypes = new Set([
   "image/png",
   "image/jpeg",
+  "image/gif",
   "image/webp",
+  "image/avif",
+  "image/heic",
+  "image/heif",
   "image/svg+xml",
   "image/x-icon",
   "image/vnd.microsoft.icon",
 ]);
+const allowedExtensions = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".heic", ".heif", ".svg", ".ico"]);
 
 fs.mkdirSync(env.uploadDir, { recursive: true });
 
@@ -36,7 +42,10 @@ const upload = multer({
   storage,
   limits: { fileSize: env.maxUploadBytes },
   fileFilter: (_req, file, cb) => {
-    if (!allowedMimeTypes.has(file.mimetype)) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const mimeAllowed = allowedMimeTypes.has(file.mimetype);
+    const extAllowed = allowedExtensions.has(ext);
+    if (!mimeAllowed && !extAllowed) {
       cb(new Error("Unsupported file type"));
       return;
     }
@@ -45,6 +54,11 @@ const upload = multer({
 });
 
 export const mediaRouter = Router();
+
+function asNullable(value: string) {
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
 
 mediaRouter.get("/", async (_req, res) => {
   const items = await prisma.media.findMany({ orderBy: { createdAt: "desc" } });
@@ -61,6 +75,9 @@ mediaRouter.post("/upload", upload.single("file"), async (req, res) => {
     data: {
       filename: file.filename,
       originalName: file.originalname,
+      title: path.parse(file.originalname).name,
+      caption: null,
+      description: null,
       mimeType: file.mimetype,
       size: file.size,
       width: null,
@@ -74,6 +91,27 @@ mediaRouter.post("/upload", upload.single("file"), async (req, res) => {
   return sendOk(res, record);
 });
 
+mediaRouter.put("/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  const existing = await prisma.media.findUnique({ where: { id } });
+  if (!existing) {
+    return sendError(res, 404, "NOT_FOUND", "Media not found");
+  }
+
+  const payload = mediaMetadataInputSchema.parse(req.body);
+  const updated = await prisma.media.update({
+    where: { id },
+    data: {
+      title: asNullable(payload.title),
+      altText: asNullable(payload.altText),
+      caption: asNullable(payload.caption),
+      description: asNullable(payload.description),
+    },
+  });
+
+  return sendOk(res, updated);
+});
+
 mediaRouter.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const existing = await prisma.media.findUnique({ where: { id } });
@@ -84,6 +122,10 @@ mediaRouter.delete("/:id", async (req, res) => {
   const linkedPost = await prisma.post.findFirst({ where: { featuredImageId: id } });
   if (linkedPost) {
     return sendError(res, 409, "MEDIA_IN_USE", "Media is in use by at least one post");
+  }
+  const linkedPage = await prisma.page.findFirst({ where: { featuredImageId: id } });
+  if (linkedPage) {
+    return sendError(res, 409, "MEDIA_IN_USE", "Media is in use by at least one page");
   }
 
   await prisma.media.delete({ where: { id } });

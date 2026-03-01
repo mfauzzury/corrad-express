@@ -30,6 +30,9 @@ export type MediaMeta = {
   id: number;
   filename: string;
   originalName: string;
+  title: string | null;
+  caption: string | null;
+  description: string | null;
   mimeType: string;
   size: number;
   width: number | null;

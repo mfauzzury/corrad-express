@@ -1,35 +1,50 @@
-# UI Standard Kit + CMS POC
+# CMS Release Setup
 
-This repository now contains:
-- Existing Next.js UI reference app at repo root.
-- New CMS POC backend and admin frontend in `apps/*`.
+This repository contains a CMS stack:
+- `apps/api-server`: Express + Prisma + SQLite API
+- `apps/admin-web`: Vue 3 + Vite admin panel
 
-## Apps
+The root Next.js app is optional reference UI and is not required to run CMS.
 
-- `apps/api-server`: Express + Prisma + SQLite REST API.
-- `apps/admin-web`: Vue 3 + Vite + Tailwind admin panel.
+## Clean Setup (Recommended)
 
-## Quick Start
+Run from repo root:
 
 ```bash
-npm install
-cp apps/api-server/.env.example apps/api-server/.env
-cp apps/admin-web/.env.example apps/admin-web/.env
-npm run db:generate
-npm run db:push
-npm run db:seed
+npm run clean:all
+npm run setup:cms
 npm run dev:cms
 ```
 
+What this does:
+- Removes old build/cache/local state (`clean:all`)
+- Installs dependencies
+- Creates missing `.env` files from `.env.example`
+- Generates Prisma client
+- Pushes database schema
+- Seeds default data
+- Starts API + Admin in dev mode
+
+## URLs
+
 - API: `http://localhost:4000`
 - Admin Web: `http://localhost:5173`
-- Next.js UI reference (optional): `npm run dev:next`
 
 ## Default Admin Login
 
 From `apps/api-server/.env`:
 - `ADMIN_EMAIL=admin@example.com`
 - `ADMIN_PASSWORD=admin12345`
+
+## Common Commands
+
+```bash
+npm run clean        # remove generated files, keep local DB/uploads/.env
+npm run clean:all    # full reset including .env, SQLite DB, uploads
+npm run setup:cms    # one-command CMS bootstrap
+npm run dev:cms      # run api + admin
+npm run build:cms    # build api + admin
+```
 
 ## API Endpoints
 
@@ -53,9 +68,3 @@ From `apps/api-server/.env`:
 - `PUT /api/settings`
 - `GET /api/dashboard/summary`
 - `GET /api/health`
-
-## Notes
-
-- SQLite DB file is local (`apps/api-server/prisma/dev.db`).
-- Uploads are local (`apps/api-server/uploads`).
-- CSRF is enforced for non-GET authenticated API requests.

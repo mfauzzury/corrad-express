@@ -43,7 +43,7 @@ function statusColor(status: string) {
     <div class="mx-auto max-w-7xl space-y-4">
       <!-- ───── Hero Header ───── -->
       <div class="flex items-center justify-between">
-        <h1 class="page-title">Dashboard</h1>
+        <h1 class="page-title">Portal Dashboard</h1>
       </div>
 
       <!-- ───── Stat Cards ───── -->

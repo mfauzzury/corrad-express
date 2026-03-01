@@ -3,6 +3,7 @@ apps/*/node_modules
 .next
 .DS_Store
 npm-debug.log*
+.claude/
 
 apps/api-server/.env
 apps/admin-web/.env

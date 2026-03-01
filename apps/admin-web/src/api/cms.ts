@@ -1,5 +1,5 @@
 import { apiRequest } from "./client";
-import type { Category, CategoryInput, Media, Page, PageInput, Post, PostInput, Role, RoleInput, SettingsPayload, UserDetail, UserInput } from "@/types";
+import type { Category, CategoryInput, Media, MediaMetadataInput, Page, PageInput, Post, PostInput, Role, RoleInput, SettingsPayload, UserDetail, UserInput } from "@/types";
 import type { AdminMenuPrefs } from "@/config/admin-menu";
 
 export async function fetchDashboardSummary() {
@@ -81,6 +81,10 @@ export async function uploadMedia(file: File) {
 
 export async function removeMedia(id: number) {
   return apiRequest<{ data: { success: boolean } }>(`/api/media/${id}`, { method: "DELETE" });
+}
+
+export async function updateMediaMetadata(id: number, input: MediaMetadataInput) {
+  return apiRequest<{ data: Media }>(`/api/media/${id}`, { method: "PUT", body: JSON.stringify(input) });
 }
 
 export async function getSettings() {

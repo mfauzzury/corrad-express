@@ -1,5 +1,7 @@
 import type { Component } from "vue";
 import {
+  Braces,
+  Database,
   FileText,
   Gauge,
   Image,
@@ -36,10 +38,17 @@ export type AdminMenuPrefs = {
 
 export const DEFAULT_MENU: MenuGroupDef[] = [
   {
+    id: "dashboard",
+    label: "",
+    items: [
+      { id: "main-dashboard", label: "Dashboard", to: "/", icon: Gauge },
+    ],
+  },
+  {
     id: "portal",
     label: "Portal",
     items: [
-      { id: "dashboard", label: "Dashboard", to: "/", icon: Gauge },
+      { id: "dashboard", label: "Portal Dashboard", to: "/portal/dashboard", icon: Gauge },
       {
         id: "posts",
         label: "Posts",
@@ -93,6 +102,8 @@ export const DEFAULT_MENU: MenuGroupDef[] = [
     id: "development",
     label: "Development",
     items: [
+      { id: "database-schema", label: "Database Schema", to: "/development/database-schema", icon: Database },
+      { id: "api-management", label: "API Management", to: "/development/api-management", icon: Braces },
       {
         id: "kitchen-sink",
         label: "Kitchen Sink",

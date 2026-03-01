@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import DashboardView from "@/views/DashboardView.vue";
+import MainDashboardView from "@/views/MainDashboardView.vue";
 import KitchenChartsView from "@/views/KitchenChartsView.vue";
 import KitchenFormsView from "@/views/KitchenFormsView.vue";
 import LoginView from "@/views/LoginView.vue";
@@ -12,6 +13,8 @@ import PostEditorView from "@/views/PostEditorView.vue";
 import PostsListView from "@/views/PostsListView.vue";
 import CategoriesListView from "@/views/CategoriesListView.vue";
 import CategoryEditorView from "@/views/CategoryEditorView.vue";
+import DatabaseSchemaView from "@/views/DatabaseSchemaView.vue";
+import ApiManagementView from "@/views/ApiManagementView.vue";
 import MenusView from "@/views/MenusView.vue";
 import RolesView from "@/views/RolesView.vue";
 import SettingsView from "@/views/SettingsView.vue";
@@ -25,7 +28,8 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/login", name: "login", component: LoginView, meta: { guestOnly: true, title: "Login" } },
-    { path: "/", name: "dashboard", component: DashboardView, meta: { requiresAuth: true, title: "Dashboard" } },
+    { path: "/", name: "main-dashboard", component: MainDashboardView, meta: { requiresAuth: true, title: "Main Dashboard" } },
+    { path: "/portal/dashboard", name: "dashboard", component: DashboardView, meta: { requiresAuth: true, title: "Portal Dashboard" } },
     { path: "/posts", name: "posts", component: PostsListView, meta: { requiresAuth: true, title: "Posts" } },
     { path: "/posts/new", name: "post-create", component: PostEditorView, meta: { requiresAuth: true, title: "New Post" } },
     { path: "/posts/:id", name: "post-edit", component: PostEditorView, meta: { requiresAuth: true, title: "Edit Post" } },
@@ -40,6 +44,8 @@ const router = createRouter({
     { path: "/kitchen-sink", name: "kitchen-sink", component: KitchenSinkView, meta: { requiresAuth: true, title: "Kitchen Sink" } },
     { path: "/kitchen-sink/forms", name: "kitchen-forms", component: KitchenFormsView, meta: { requiresAuth: true, title: "Forms" } },
     { path: "/kitchen-sink/charts", name: "kitchen-charts", component: KitchenChartsView, meta: { requiresAuth: true, title: "Charts" } },
+    { path: "/development/database-schema", name: "database-schema", component: DatabaseSchemaView, meta: { requiresAuth: true, title: "Database Schema" } },
+    { path: "/development/api-management", name: "api-management", component: ApiManagementView, meta: { requiresAuth: true, title: "API Management" } },
     {
       path: "/profile",
       name: "profile",
@@ -70,7 +76,7 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.guestOnly && auth.isAuthenticated) {
-    return { name: "dashboard" };
+    return { name: "main-dashboard" };
   }
 
   return true;

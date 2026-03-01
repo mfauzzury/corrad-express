@@ -20,7 +20,7 @@ async function main() {
   });
 
   const defaultSettings: Array<{ key: string; value: string }> = [
-    { key: "siteTitle", value: "CORRAD+ UI" },
+    { key: "siteTitle", value: "CORRAD Xpress" },
     { key: "tagline", value: "Design system and admin standards." },
     { key: "titleFormat", value: "%page% | %site%" },
     { key: "metaDescription", value: "Internal UI standard and admin toolkit." },

@@ -14,7 +14,15 @@ function resolveMenu(prefs: AdminMenuPrefs | null): MenuGroupDef[] {
       groupMap.delete(gid);
     }
   }
-  for (const g of groupMap.values()) ordered.push(g);
+  for (const g of groupMap.values()) {
+    const defaultIdx = DEFAULT_MENU.findIndex((dg) => dg.id === g.id);
+    let insertAt = 0;
+    for (let i = 0; i < ordered.length; i++) {
+      const orderedIdx = DEFAULT_MENU.findIndex((dg) => dg.id === ordered[i].id);
+      if (orderedIdx < defaultIdx) insertAt = i + 1;
+    }
+    ordered.splice(insertAt, 0, g);
+  }
 
   const hiddenGroups = prefs.hiddenGroups || [];
 

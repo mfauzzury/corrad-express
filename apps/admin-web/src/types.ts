@@ -70,6 +70,9 @@ export type Media = {
   id: number;
   filename: string;
   originalName: string;
+  title: string | null;
+  caption: string | null;
+  description: string | null;
   mimeType: string;
   size: number;
   width: number | null;
@@ -78,6 +81,13 @@ export type Media = {
   path: string;
   url: string;
   createdAt: string;
+};
+
+export type MediaMetadataInput = {
+  title: string;
+  altText: string;
+  caption: string;
+  description: string;
 };
 
 export type SettingsPayload = {

@@ -267,6 +267,7 @@ watch(() => route.path, syncOpenMenus, { immediate: true });
         <nav class="flex-1 p-3" :class="isCollapsed ? 'md:overflow-visible md:px-0 md:py-2' : 'overflow-y-auto'">
           <div v-for="(group, gi) in menuStore.resolvedMenu" :key="group.id">
             <p
+              v-if="group.label"
               class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400"
               :class="[gi === 0 ? 'mb-1' : 'mb-1 mt-4', isCollapsed ? 'md:hidden' : '']"
             >

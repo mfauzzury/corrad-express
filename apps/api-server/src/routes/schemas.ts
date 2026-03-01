@@ -73,3 +73,10 @@ export const adminMenuPrefsSchema = z.object({
   hidden: z.array(z.string()),
   hiddenGroups: z.array(z.string()).default([]),
 });
+
+export const mediaMetadataInputSchema = z.object({
+  title: z.string().trim().max(255).default(""),
+  altText: z.string().trim().max(255).default(""),
+  caption: z.string().trim().max(1000).default(""),
+  description: z.string().trim().max(5000).default(""),
+});

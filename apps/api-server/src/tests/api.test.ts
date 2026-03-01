@@ -35,6 +35,7 @@ before(async () => {
 beforeEach(async () => {
   await prisma.post.deleteMany();
   await prisma.page.deleteMany();
+  await prisma.media.deleteMany();
   await prisma.session.deleteMany();
 
   const loginResponse = await agent.post("/api/auth/login").send({
@@ -138,5 +139,31 @@ describe("API smoke", () => {
 
     const me = await agent.get("/api/auth/me");
     assert.equal(me.status, 401);
+  });
+
+  it("updates media metadata", async () => {
+    const upload = await agent
+      .post("/api/media/upload")
+      .set("x-csrf-token", csrfToken)
+      .attach("file", Buffer.from("fake-image-bytes"), { filename: "sample-image.png", contentType: "image/png" });
+
+    assert.equal(upload.status, 200);
+    const mediaId = upload.body.data.id as number;
+
+    const update = await agent
+      .put(`/api/media/${mediaId}`)
+      .set("x-csrf-token", csrfToken)
+      .send({
+        title: "Homepage Banner",
+        altText: "Banner image showing main announcement",
+        caption: "Launch week visual",
+        description: "Used on homepage hero section.",
+      });
+
+    assert.equal(update.status, 200);
+    assert.equal(update.body.data.title, "Homepage Banner");
+    assert.equal(update.body.data.altText, "Banner image showing main announcement");
+    assert.equal(update.body.data.caption, "Launch week visual");
+    assert.equal(update.body.data.description, "Used on homepage hero section.");
   });
 });

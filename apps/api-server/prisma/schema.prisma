@@ -97,6 +97,9 @@ model Media {
   id           Int      @id @default(autoincrement())
   filename     String
   originalName String
+  title        String?
+  caption      String?
+  description  String?
   mimeType     String
   size         Int
   width        Int?

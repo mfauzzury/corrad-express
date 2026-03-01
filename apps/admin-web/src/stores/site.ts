@@ -4,7 +4,7 @@ import type { SettingsPayload } from "@/types";
 
 export const useSiteStore = defineStore("site", {
   state: () => ({
-    siteTitle: "CORRAD+",
+    siteTitle: "CORRAD Xpress",
     titleFormat: "%page% | %site%",
     siteIconUrl: "",
     sidebarLogoUrl: "",
@@ -16,7 +16,7 @@ export const useSiteStore = defineStore("site", {
       try {
         const res = await getSettings();
         const d = res.data;
-        this.siteTitle = d.siteTitle || "CORRAD+";
+        this.siteTitle = d.siteTitle || "CORRAD Xpress";
         this.titleFormat = d.titleFormat || "%page% | %site%";
         this.siteIconUrl = d.siteIconUrl || "";
         this.sidebarLogoUrl = d.sidebarLogoUrl || "";
@@ -27,7 +27,7 @@ export const useSiteStore = defineStore("site", {
       }
     },
     applyFrom(payload: SettingsPayload) {
-      this.siteTitle = payload.siteTitle || "CORRAD+";
+      this.siteTitle = payload.siteTitle || "CORRAD Xpress";
       this.titleFormat = payload.titleFormat || "%page% | %site%";
       this.siteIconUrl = payload.siteIconUrl || "";
       this.sidebarLogoUrl = payload.sidebarLogoUrl || "";
