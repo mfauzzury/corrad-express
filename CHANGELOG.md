@@ -30,4 +30,26 @@ All notable changes to this project are documented in this file.
 - Refined topbar toast motion, timing, and title/visibility choreography.
 - Updated spacing/alignment behavior for site title/profile/topbar elements.
 
+## [1.0.0] - 2026-03-01
+
+### Added
+- Initial full-stack CMS foundation with Vue 3 admin app and Express API server.
+- Authentication flow, role-based admin capabilities, and core dashboard experience.
+- Content management modules for posts, pages, categories, menus, settings, and media.
+- Media metadata handling and development support screens/tools.
+- Monorepo setup scripts for clean local install and bootstrapping.
+
+### Changed
+- Consolidated release for CMS main dashboard, media metadata improvements, and development tooling cleanup.
+- UI refinements across early admin screens (login, profile/settings, sidebar/header behavior).
+
+## Historical Notes (Pre-1.0.0)
+
+- Early milestone commits introduced:
+  - Base CMS scaffold and API/app wiring.
+  - Sidebar/header and settings UX iterations.
+  - User CRUD and shared user edit flows.
+  - Theme color picker and login UI modernization.
+
 [1.1.0]: https://github.com/mfauzzury/corrad-xpress/releases/tag/v1.1.0
+[1.0.0]: https://github.com/mfauzzury/corrad-xpress/releases/tag/v1.0.0
